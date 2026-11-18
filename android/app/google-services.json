@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "386478710715",
+    "project_id": "compound-resident",
+    "storage_bucket": "compound-resident.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386478710715:android:b8c385599a47d4220cae9e",
+        "android_client_info": {
+          "package_name": "com.example.compound_resident"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYttoxW_9IsGBG6RXFL_7NY64LhXcZZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
