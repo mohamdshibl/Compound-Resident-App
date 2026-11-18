@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../../requests/domain/entities/request_enums.dart';
+import '../../../requests/domain/entities/service_request_entity.dart';
+import '../../../requests/presentation/cubit/maintenance_cubit.dart';
+import '../../../requests/presentation/cubit/maintenance_state.dart';
 
 class ResidentDashboardScreen extends StatelessWidget {
   const ResidentDashboardScreen({super.key});
@@ -157,7 +162,7 @@ class ResidentDashboardScreen extends StatelessWidget {
                       color: AppColors.statusAssigned,
                       title: 'Maintenance',
                       subtitle: 'AC, plumbing & repairs',
-                      onTap: () {},
+                      onTap: () => context.push('/create-request'),
                     ),
                     _buildServiceTile(
                       icon: Icons.sports_tennis_rounded,
@@ -189,76 +194,146 @@ class ResidentDashboardScreen extends StatelessWidget {
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('View All', style: TextStyle(color: AppColors.accentTeal)),
+                    TextButton.icon(
+                      icon: const Icon(Icons.add, size: 16, color: AppColors.accentTeal),
+                      label: const Text('New Request', style: TextStyle(color: AppColors.accentTeal)),
+                      onPressed: () => context.push('/create-request'),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
 
-                // Sample Request Card
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceCard,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.borderLight),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
+                // Real Requests Stream from MaintenanceCubit
+                BlocBuilder<MaintenanceCubit, MaintenanceState>(
+                  builder: (context, mState) {
+                    final requests = (mState is MaintenanceLoaded) ? mState.requests : <ServiceRequestEntity>[];
+
+                    if (requests.isEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: AppColors.statusAssigned.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.surfaceCard,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.borderLight),
                         ),
-                        child: const Icon(Icons.ac_unit_rounded, color: AppColors.statusAssigned, size: 24),
-                      ),
-                      const SizedBox(width: 14),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Master Bedroom AC Service',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'REQ-2026-1042 • Tomorrow 14:00',
-                              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.statusAssigned.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'ASSIGNED',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.statusAssigned,
+                        child: const Center(
+                          child: Text(
+                            'No active service requests right now.',
+                            style: TextStyle(color: AppColors.textSecondary),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: requests.length,
+                      separatorBuilder: (context, index) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final req = requests[index];
+                        return _buildRequestCard(context, req);
+                      },
+                    );
+                  },
                 ),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildRequestCard(BuildContext context, ServiceRequestEntity req) {
+    return InkWell(
+      onTap: () => context.push('/request-detail', extra: req),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.borderLight),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.statusAssigned.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(req.category.iconEmoji, style: const TextStyle(fontSize: 22)),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    req.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${req.requestNumber} • ${req.preferredTimeSlot}',
+                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            _buildStatusBadge(req.currentStatus),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(RequestStatus status) {
+    Color bg;
+    Color fg;
+    switch (status) {
+      case RequestStatus.pending:
+      case RequestStatus.underReview:
+        bg = AppColors.statusPending.withValues(alpha: 0.12);
+        fg = AppColors.statusPending;
+        break;
+      case RequestStatus.assigned:
+      case RequestStatus.inProgress:
+        bg = AppColors.statusAssigned.withValues(alpha: 0.12);
+        fg = AppColors.statusAssigned;
+        break;
+      case RequestStatus.completed:
+        bg = AppColors.statusCompleted.withValues(alpha: 0.12);
+        fg = AppColors.statusCompleted;
+        break;
+      default:
+        bg = AppColors.statusCancelled.withValues(alpha: 0.12);
+        fg = AppColors.statusCancelled;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        status.displayNameEn.toUpperCase(),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: fg,
+        ),
+      ),
     );
   }
 

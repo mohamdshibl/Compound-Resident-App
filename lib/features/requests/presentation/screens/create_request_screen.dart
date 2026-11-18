@@ -1,0 +1,286 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
+import '../../domain/entities/request_enums.dart';
+import '../../domain/entities/service_request_entity.dart';
+import '../cubit/maintenance_cubit.dart';
+import '../cubit/maintenance_state.dart';
+
+class CreateRequestScreen extends StatefulWidget {
+  const CreateRequestScreen({super.key});
+
+  @override
+  State<CreateRequestScreen> createState() => _CreateRequestScreenState();
+}
+
+class _CreateRequestScreenState extends State<CreateRequestScreen> {
+  final _formKey = GlobalKey<FormState>();
+  RequestCategory _selectedCategory = RequestCategory.airConditioning;
+  RequestPriority _selectedPriority = RequestPriority.medium;
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final DateTime _preferredDate = DateTime.now().add(const Duration(days: 1));
+  String _preferredTimeSlot = '14:00 - 16:00';
+
+  final List<String> _timeSlots = [
+    '09:00 - 12:00',
+    '12:00 - 14:00',
+    '14:00 - 16:00',
+    '16:00 - 18:00',
+    '18:00 - 20:00',
+  ];
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authState = context.read<AuthCubit>().state;
+    if (authState is! Authenticated) return;
+    final user = authState.user;
+
+    final requestId = 'req_${DateTime.now().millisecondsSinceEpoch}';
+    final requestNumber = 'REQ-2026-${(1000 + DateTime.now().millisecond).toString()}';
+
+    final request = ServiceRequestEntity(
+      id: requestId,
+      requestNumber: requestNumber,
+      compoundId: user.compoundId,
+      unitId: user.authorizedUnitIds.isNotEmpty ? user.authorizedUnitIds.first : 'unit_v104',
+      unitNumber: user.primaryUnitNumber ?? 'V-104',
+      createdByUserId: user.id,
+      createdByName: user.fullName,
+      createdByRole: user.role.toDbString(),
+      category: _selectedCategory,
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+      priority: _selectedPriority,
+      preferredDate: _preferredDate,
+      preferredTimeSlot: _preferredTimeSlot,
+      currentStatus: RequestStatus.pending,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    context.read<MaintenanceCubit>().createRequest(request);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<MaintenanceCubit, MaintenanceState>(
+      listener: (context, state) {
+        if (state is MaintenanceLoaded && state.successMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.successMessage!),
+              backgroundColor: AppColors.statusCompleted,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          context.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          backgroundColor: AppColors.primaryDark,
+          title: const Text('New Maintenance Request'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Category Selector
+                const Text(
+                  'Select Category',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: RequestCategory.values.map((cat) {
+                    final isSelected = _selectedCategory == cat;
+                    return InkWell(
+                      onTap: () => setState(() => _selectedCategory = cat),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.primary : AppColors.surfaceCard,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected ? AppColors.accentGold : AppColors.borderLight,
+                            width: isSelected ? 1.5 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(cat.iconEmoji, style: const TextStyle(fontSize: 16)),
+                            const SizedBox(width: 6),
+                            Text(
+                              cat.displayNameEn,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: isSelected ? AppColors.textWhite : AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 22),
+
+                // Request Title
+                const Text(
+                  'Problem Title',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    hintText: 'e.g. Master Bedroom AC Blowing Warm Air',
+                  ),
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter a title' : null,
+                ),
+                const SizedBox(height: 18),
+
+                // Problem Description
+                const Text(
+                  'Detailed Description',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    hintText: 'Describe the issue, location in the unit, and any sounds or leakages...',
+                  ),
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please describe the problem' : null,
+                ),
+                const SizedBox(height: 20),
+
+                // Priority Selection
+                const Text(
+                  'Urgency / Priority',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: RequestPriority.values.map((p) {
+                    final isSelected = _selectedPriority == p;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: InkWell(
+                          onTap: () => setState(() => _selectedPriority = p),
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: isSelected ? AppColors.primary : AppColors.surfaceCard,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: isSelected ? AppColors.accentGold : AppColors.borderLight,
+                              ),
+                            ),
+                            child: Text(
+                              p.displayNameEn,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? AppColors.textWhite : AppColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 22),
+
+                // Preferred Date & Time
+                const Text(
+                  'Preferred Appointment Slot',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceCard,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.borderLight),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.accentTeal),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Tomorrow (${_preferredDate.day}/${_preferredDate.month}/${_preferredDate.year})',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      const Spacer(),
+                      DropdownButton<String>(
+                        value: _preferredTimeSlot,
+                        underline: const SizedBox(),
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.accentGoldDark),
+                        items: _timeSlots
+                            .map((slot) => DropdownMenuItem(value: slot, child: Text(slot, style: const TextStyle(fontSize: 13))))
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) setState(() => _preferredTimeSlot = val);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Submit Button
+                BlocBuilder<MaintenanceCubit, MaintenanceState>(
+                  builder: (context, state) {
+                    final isSubmitting = (state is MaintenanceLoaded && state.isSubmitting);
+                    return ElevatedButton(
+                      onPressed: isSubmitting ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      child: isSubmitting
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textWhite),
+                            )
+                          : const Text('Submit Request to Maintenance'),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

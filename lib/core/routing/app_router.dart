@@ -12,6 +12,9 @@ import '../../features/housekeeping/presentation/screens/housekeeping_dashboard_
 import '../../features/it_support/presentation/screens/it_dashboard_screen.dart';
 import '../../features/maintenance/presentation/screens/maintenance_dashboard_screen.dart';
 import '../../features/recreation/presentation/screens/recreation_dashboard_screen.dart';
+import '../../features/requests/domain/entities/service_request_entity.dart';
+import '../../features/requests/presentation/screens/create_request_screen.dart';
+import '../../features/requests/presentation/screens/request_detail_screen.dart';
 import '../../features/resident_dashboard/presentation/screens/resident_dashboard_screen.dart';
 import '../../features/security/presentation/screens/security_dashboard_screen.dart';
 
@@ -76,6 +79,17 @@ class AppRouter {
               case UserRole.systemAdmin:
                 return const SystemAdminDashboardScreen();
             }
+          },
+        ),
+        GoRoute(
+          path: '/create-request',
+          builder: (context, state) => const CreateRequestScreen(),
+        ),
+        GoRoute(
+          path: '/request-detail',
+          builder: (context, state) {
+            final req = state.extra as ServiceRequestEntity;
+            return RequestDetailScreen(initialRequest: req);
           },
         ),
       ],
