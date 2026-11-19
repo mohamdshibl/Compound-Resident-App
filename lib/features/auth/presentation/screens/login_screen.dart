@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/al_mohamadia_logo.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/demo_account_sheet.dart';
@@ -75,57 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Luxury Brand Emblem
-                      Center(
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [AppColors.primaryDark, AppColors.primary],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(22),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryDark.withValues(alpha: 0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.apartment_rounded,
-                            color: AppColors.accentGold,
-                            size: 42,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      const Center(
-                        child: Text(
-                          'AL-NAKHEEL',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 3,
-                            color: AppColors.primaryDark,
-                          ),
-                        ),
-                      ),
-                      const Center(
-                        child: Text(
-                          'PRESTIGE RESIDENTIAL LIVING',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 2,
-                            color: AppColors.accentGoldDark,
-                          ),
-                        ),
-                      ),
+                      const Center(child: AlMohamadiaLogo(width: 230)),
                       const SizedBox(height: 36),
 
                       // Email Field

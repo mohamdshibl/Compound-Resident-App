@@ -1,11 +1,11 @@
 {
-    "name": "compound_resident",
-    "short_name": "compound_resident",
+    "name": "AL-MOHAMADIA Compound",
+    "short_name": "AL-MOHAMADIA",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Compound Resident App",
+    "description": "AL-MOHAMADIA Compound Resident Services",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

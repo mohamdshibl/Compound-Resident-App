@@ -36,7 +36,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
         BlocProvider<MaintenanceCubit>.value(value: _maintenanceCubit),
       ],
       child: MaterialApp.router(
-        title: 'Compound Resident App',
+        title: 'AL-MOHAMADIA Compound',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         routerConfig: _router,
