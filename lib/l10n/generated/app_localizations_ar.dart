@@ -335,6 +335,122 @@ class AppLocalizationsAr extends AppLocalizations {
   String get todaySuffix => '(اليوم)';
 
   @override
+  String get checkOut => 'تسجيل خروج';
+
+  @override
+  String get denyEntry => 'رفض';
+
+  @override
+  String get denyVisitorTitle => 'رفض دخول الزائر';
+
+  @override
+  String get denyReasonHint =>
+      'أدخل سبب رفض الدخول (مثال: عدم وجود إثبات هوية)...';
+
+  @override
+  String get confirmDeny => 'تأكيد الرفض';
+
+  @override
+  String get currentlyOnCompound => 'متواجدون داخل المجمع حالياً';
+
+  @override
+  String get recentGateActivity => 'سجل البوابة';
+
+  @override
+  String get noExpectedVisitors => 'لا يوجد زوار متوقعون يطابقون البحث.';
+
+  @override
+  String get noVisitorsOnCompound => 'لا يوجد زوار مسجلون داخل المجمع حالياً.';
+
+  @override
+  String get walkInPedestrian => 'بدون مركبة';
+
+  @override
+  String get passCodeLabel => 'رمز التصريح';
+
+  @override
+  String get verifyQrCodeTitle => 'التحقق من رمز تصريح الزائر';
+
+  @override
+  String get verifyQrCodeHint =>
+      'أدخل رمز التصريح (مثال VP-4823) أو رقم اللوحة...';
+
+  @override
+  String get verifyButton => 'بحث / تحقق';
+
+  @override
+  String get myVisitorPasses => 'تصاريح الزوار الخاصة بي';
+
+  @override
+  String get createVisitorPassTitle => 'إصدار تصريح زائر';
+
+  @override
+  String get newVisitorPass => 'تصريح زائر جديد';
+
+  @override
+  String get noVisitorPassesYet =>
+      'لم يتم إصدار تصاريح زوار بعد. اضغط + لدعوة ضيف.';
+
+  @override
+  String get visitorFullName => 'اسم الزائر الكامل';
+
+  @override
+  String get visitorFullNameHint => 'مثال: خالد الغامدي';
+
+  @override
+  String get visitorFullNameRequired => 'يرجى إدخال اسم الزائر';
+
+  @override
+  String get visitorPhone => 'رقم جوال الزائر';
+
+  @override
+  String get visitorPhoneHint => '+966 5X XXX XXXX';
+
+  @override
+  String get visitorPhoneRequired => 'يرجى إدخال رقم جوال الزائر';
+
+  @override
+  String get visitDateLabel => 'تاريخ الزيارة';
+
+  @override
+  String get expectedArrivalTimeLabel => 'وقت الوصول المتوقع';
+
+  @override
+  String get vehiclePlateOptional => 'رقم لوحة المركبة (اختياري)';
+
+  @override
+  String get vehiclePlateHint => 'مثال: ABC 4567';
+
+  @override
+  String get securityNotesOptional => 'ملاحظات لأمن البوابة (اختياري)';
+
+  @override
+  String get securityNotesHint => 'مثال: ضيف عائلي، مندوب توصيل...';
+
+  @override
+  String get generateQrPass => 'إصدار تصريح الدخول ورمز QR';
+
+  @override
+  String get digitalGatePass => 'تصريح دخول إلكتروني';
+
+  @override
+  String get showQrAtGate =>
+      'أبرز رمز QR هذا عند البوابة الرئيسية لمجمع المحمدية';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String checkedInAt(String time) {
+    return 'وقت الدخول: $time';
+  }
+
+  @override
+  String checkedOutAt(String time) {
+    return 'وقت الخروج: $time';
+  }
+
+  @override
   String get housekeepingAndCleaning => 'النظافة المنزلية';
 
   @override

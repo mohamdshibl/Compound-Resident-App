@@ -17,6 +17,8 @@ import '../../features/requests/presentation/screens/create_request_screen.dart'
 import '../../features/requests/presentation/screens/request_detail_screen.dart';
 import '../../features/resident_dashboard/presentation/screens/resident_dashboard_screen.dart';
 import '../../features/security/presentation/screens/security_dashboard_screen.dart';
+import '../../features/visitor_management/presentation/screens/create_visitor_pass_screen.dart';
+import '../../features/visitor_management/presentation/screens/my_visitor_passes_screen.dart';
 
 class AppRouter {
   static GoRouter createRouter(AuthCubit authCubit) {
@@ -91,6 +93,14 @@ class AppRouter {
             final req = state.extra as ServiceRequestEntity;
             return RequestDetailScreen(initialRequest: req);
           },
+        ),
+        GoRoute(
+          path: '/my-visitor-passes',
+          builder: (context, state) => const MyVisitorPassesScreen(),
+        ),
+        GoRoute(
+          path: '/create-visitor-pass',
+          builder: (context, state) => const CreateVisitorPassScreen(),
         ),
       ],
     );

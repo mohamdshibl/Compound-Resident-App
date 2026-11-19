@@ -32,17 +32,37 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
         _submitRatingUseCase = submitRatingUseCase,
         super(MaintenanceInitial());
 
-  void listenToRequests({String? userId, String? department}) {
+  void listenToRequests({
+    String? compoundId,
+    String? userId,
+    String? userEmail,
+    String? department,
+  }) {
     emit(MaintenanceLoading());
     _requestsSub?.cancel();
 
     _requestsSub = _getRequestsUseCase
-        .stream(userId: userId, department: department)
+        .stream(
+          compoundId: compoundId,
+          userId: userId,
+          userEmail: userEmail,
+          department: department,
+        )
         .listen(
       (requests) {
         if (state is MaintenanceLoaded) {
           final cur = state as MaintenanceLoaded;
-          emit(cur.copyWith(requests: requests));
+          ServiceRequestEntity? syncedSelected = cur.selectedRequest;
+          if (syncedSelected != null) {
+            final idx = requests.indexWhere((r) => r.id == syncedSelected!.id);
+            if (idx != -1) {
+              syncedSelected = requests[idx];
+            }
+          }
+          emit(cur.copyWith(
+            requests: requests,
+            selectedRequest: syncedSelected,
+          ));
         } else {
           emit(MaintenanceLoaded(requests: requests));
         }
@@ -51,6 +71,12 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
         emit(MaintenanceError(err.toString()));
       },
     );
+  }
+
+  void clear() {
+    _requestsSub?.cancel();
+    _commentsSub?.cancel();
+    emit(MaintenanceInitial());
   }
 
   void filterByCategory(RequestCategory? category) {
@@ -67,34 +93,47 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
     if (state is MaintenanceLoaded) {
       final cur = state as MaintenanceLoaded;
       emit(cur.copyWith(selectedRequest: request));
-      _listenToComments(request.id);
+    } else {
+      emit(MaintenanceLoaded(requests: [request], selectedRequest: request));
     }
+    _listenToComments(request.id);
   }
 
   void _listenToComments(String requestId) {
     _commentsSub?.cancel();
-    _commentsSub = _addCommentUseCase.stream(requestId).listen((comments) {
-      if (state is MaintenanceLoaded) {
-        final cur = state as MaintenanceLoaded;
-        emit(cur.copyWith(comments: comments));
-      }
-    });
+    _commentsSub = _addCommentUseCase.stream(requestId).listen(
+      (comments) {
+        if (state is MaintenanceLoaded) {
+          final cur = state as MaintenanceLoaded;
+          emit(cur.copyWith(comments: comments));
+        }
+      },
+      onError: (_) {},
+    );
   }
 
   Future<void> createRequest(ServiceRequestEntity request) async {
-    if (state is! MaintenanceLoaded) return;
-    final cur = state as MaintenanceLoaded;
+    final cur = state is MaintenanceLoaded
+        ? state as MaintenanceLoaded
+        : const MaintenanceLoaded(requests: []);
     emit(cur.copyWith(isSubmitting: true));
 
     try {
       final created = await _createRequestUseCase(request);
-      emit(cur.copyWith(
+      final latest = state is MaintenanceLoaded
+          ? state as MaintenanceLoaded
+          : cur;
+      emit(latest.copyWith(
         isSubmitting: false,
         selectedRequest: created,
-        successMessage: 'Maintenance request #${created.requestNumber} submitted successfully!',
+        successMessage:
+            'Maintenance request #${created.requestNumber} submitted!',
       ));
     } catch (e) {
-      emit(cur.copyWith(
+      final latest = state is MaintenanceLoaded
+          ? state as MaintenanceLoaded
+          : cur;
+      emit(latest.copyWith(
         isSubmitting: false,
         errorMessage: 'Failed to submit request: $e',
       ));
@@ -108,14 +147,16 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
         final cur = state as MaintenanceLoaded;
         if (cur.selectedRequest?.id == requestId) {
           emit(cur.copyWith(
-            selectedRequest: cur.selectedRequest!.copyWith(currentStatus: newStatus),
+            selectedRequest:
+                cur.selectedRequest!.copyWith(currentStatus: newStatus),
             successMessage: 'Status updated to ${newStatus.displayNameEn}',
           ));
         }
       }
     } catch (e) {
       if (state is MaintenanceLoaded) {
-        emit((state as MaintenanceLoaded).copyWith(errorMessage: 'Failed to update status: $e'));
+        emit((state as MaintenanceLoaded)
+            .copyWith(errorMessage: 'Failed to update status: $e'));
       }
     }
   }
@@ -146,7 +187,8 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
       }
     } catch (e) {
       if (state is MaintenanceLoaded) {
-        emit((state as MaintenanceLoaded).copyWith(errorMessage: 'Failed to assign: $e'));
+        emit((state as MaintenanceLoaded)
+            .copyWith(errorMessage: 'Failed to assign: $e'));
       }
     }
   }
@@ -172,7 +214,12 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
 
     try {
       await _addCommentUseCase(requestId: requestId, comment: comment);
-    } catch (_) {}
+    } catch (e) {
+      if (state is MaintenanceLoaded) {
+        emit((state as MaintenanceLoaded)
+            .copyWith(errorMessage: 'Failed to send comment: $e'));
+      }
+    }
   }
 
   Future<void> submitRating({
@@ -199,7 +246,12 @@ class MaintenanceCubit extends Cubit<MaintenanceState> {
           ));
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      if (state is MaintenanceLoaded) {
+        emit((state as MaintenanceLoaded)
+            .copyWith(errorMessage: 'Failed to submit rating: $e'));
+      }
+    }
   }
 
   @override

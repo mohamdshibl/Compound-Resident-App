@@ -149,6 +149,52 @@
   "statusExpected": "Expected",
   "checkIn": "Check In",
   "todaySuffix": "(Today)",
+  "checkOut": "Check Out",
+  "denyEntry": "Deny",
+  "denyVisitorTitle": "Deny Visitor Entry",
+  "denyReasonHint": "Enter reason for denying entry (e.g. Unverified ID)...",
+  "confirmDeny": "Confirm Denial",
+  "currentlyOnCompound": "Currently on Compound",
+  "recentGateActivity": "Gate History",
+  "noExpectedVisitors": "No expected visitors matching your search.",
+  "noVisitorsOnCompound": "No visitors currently checked in on the compound.",
+  "walkInPedestrian": "Walk-in / No Vehicle",
+  "passCodeLabel": "Pass Code",
+  "verifyQrCodeTitle": "Verify Visitor Pass Code",
+  "verifyQrCodeHint": "Enter pass code (e.g. VP-4823) or vehicle plate...",
+  "verifyButton": "Search / Verify",
+  "myVisitorPasses": "My Visitor Passes",
+  "createVisitorPassTitle": "Create Visitor Pass",
+  "newVisitorPass": "New Visitor Pass",
+  "noVisitorPassesYet": "No visitor passes created yet. Tap + to invite a guest.",
+  "visitorFullName": "Visitor Full Name",
+  "visitorFullNameHint": "e.g. Khalid Al-Ghamdi",
+  "visitorFullNameRequired": "Please enter the visitor's name",
+  "visitorPhone": "Visitor Phone Number",
+  "visitorPhoneHint": "+966 5X XXX XXXX",
+  "visitorPhoneRequired": "Please enter the visitor's phone number",
+  "visitDateLabel": "Visit Date",
+  "expectedArrivalTimeLabel": "Expected Arrival Time",
+  "vehiclePlateOptional": "Vehicle Plate Number (Optional)",
+  "vehiclePlateHint": "e.g. ABC 4567",
+  "securityNotesOptional": "Notes for Gate Security (Optional)",
+  "securityNotesHint": "e.g. Delivery driver, family guest...",
+  "generateQrPass": "Generate Visitor QR Pass",
+  "digitalGatePass": "DIGITAL GATE PASS",
+  "showQrAtGate": "Present this QR pass at Al-Mohamedia Compound Main Gate",
+  "close": "Close",
+  "checkedInAt": "Checked in at {time}",
+  "@checkedInAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "checkedOutAt": "Checked out at {time}",
+  "@checkedOutAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
 
   "housekeepingAndCleaning": "Housekeeping & Cleaning",
   "housekeepingSupervisorFallback": "Housekeeping Supervisor",

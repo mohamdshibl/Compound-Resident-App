@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:compound_resident/core/l10n/locale_cubit.dart';
 import 'package:compound_resident/features/auth/domain/entities/user_entity.dart';
+import 'package:compound_resident/features/visitor_management/domain/entities/visitor_pass_entity.dart';
+import 'package:compound_resident/features/visitor_management/presentation/cubit/visitor_state.dart';
 import 'package:compound_resident/l10n/generated/app_localizations.dart';
 
 void main() {
@@ -59,5 +61,39 @@ void main() {
       Directionality.of(tester.element(find.text('مجمع المحمدية'))),
       TextDirection.rtl,
     );
+  });
+
+  test('VisitorLoaded filters expected, checked-in, and plate search', () {
+    final now = DateTime.now();
+    final p1 = VisitorPassEntity(
+      id: 'vp_1',
+      passCode: 'VP-4823',
+      compoundId: 'compound_al_mohamedia',
+      unitId: 'unit_v104',
+      unitNumber: 'V-104',
+      residentId: 'usr_1',
+      residentEmail: 'owner@compound.demo',
+      residentName: 'Dr. Tarek',
+      visitorName: 'Khalid Al-Ghamdi',
+      visitorPhone: '+966500000000',
+      visitDate: now,
+      expectedArrivalTime: '18:30',
+      vehiclePlate: 'ABC 4567',
+      status: VisitorPassStatus.expected,
+      createdAt: now,
+    );
+    final p2 = p1.copyWith(
+      id: 'vp_2',
+      passCode: 'VP-3344',
+      status: VisitorPassStatus.checkedIn,
+    );
+
+    final state = VisitorLoaded(passes: [p1, p2], searchQuery: 'ABC 4567');
+    expect(state.expectedPasses.length, 1);
+    expect(state.checkedInPasses.length, 1);
+
+    final stateByCode = state.copyWith(searchQuery: 'VP-3344');
+    expect(stateByCode.expectedPasses.length, 0);
+    expect(stateByCode.checkedInPasses.length, 1);
   });
 }

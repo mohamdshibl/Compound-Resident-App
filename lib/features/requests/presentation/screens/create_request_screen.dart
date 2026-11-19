@@ -59,6 +59,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       unitId: user.authorizedUnitIds.isNotEmpty ? user.authorizedUnitIds.first : 'unit_v104',
       unitNumber: user.primaryUnitNumber ?? 'V-104',
       createdByUserId: user.id,
+      createdByEmail: user.email,
       createdByName: user.localizedName(context),
       createdByRole: user.role.toDbString(),
       category: _selectedCategory,
@@ -82,7 +83,15 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
     return BlocListener<MaintenanceCubit, MaintenanceState>(
       listener: (context, state) {
-        if (state is MaintenanceLoaded && state.successMessage != null) {
+        if (state is MaintenanceLoaded && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: AppColors.statusRejected,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        } else if (state is MaintenanceLoaded && state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.successMessage!),

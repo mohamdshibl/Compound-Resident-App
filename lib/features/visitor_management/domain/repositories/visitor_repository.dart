@@ -1,27 +1,38 @@
 import '../entities/visitor_pass_entity.dart';
 
 abstract class VisitorRepository {
-  /// Stream of all visitor passes for a specific resident.
-  Stream<List<VisitorPassEntity>> getMyPasses(String residentId);
 
-  /// Stream of all expected/active visitors for security (today + future).
-  Stream<List<VisitorPassEntity>> getExpectedVisitors();
+  /// Live Firestore stream of visitor passes for a specific resident.
+  Stream<List<VisitorPassEntity>> streamMyPasses({
+    required String residentEmail,
+    String? residentId,
+  });
 
-  /// Stream of all currently checked-in visitors.
-  Stream<List<VisitorPassEntity>> getCheckedInVisitors();
 
-  /// Search by vehicle plate or visitor name (for security gate).
-  Future<List<VisitorPassEntity>> searchVisitors(String query);
+  /// Live Firestore stream of all compound visitor passes (for Security & staff).
+  Stream<List<VisitorPassEntity>> streamCompoundPasses({
+    String compoundId = 'compound_al_mohamedia',
+  });
 
-  /// Create a new visitor pass.
+
+  /// Search visitor passes by vehicle plate, visitor name, passCode, or unit.
+  Future<List<VisitorPassEntity>> searchVisitors(
+    String query, {
+    String compoundId = 'compound_al_mohamedia',
+  });
+
+  /// Create a new visitor pass in Cloud Firestore.
   Future<VisitorPassEntity> createVisitorPass(VisitorPassEntity pass);
 
-  /// Check in a visitor.
-  Future<VisitorPassEntity> checkIn(String passId, {String? securityNotes});
 
-  /// Check out a visitor.
-  Future<VisitorPassEntity> checkOut(String passId, {String? securityNotes});
+  /// Check in an expected visitor at the gate.
+  Future<void> checkIn(String passId, {String? securityNotes});
 
-  /// Deny a visitor entry.
-  Future<VisitorPassEntity> denyEntry(String passId, {required String notes});
+
+  /// Check out a visitor leaving the compound.
+  Future<void> checkOut(String passId, {String? securityNotes});
+
+
+  /// Deny entry to a visitor at the gate.
+  Future<void> denyEntry(String passId, {required String notes});
 }

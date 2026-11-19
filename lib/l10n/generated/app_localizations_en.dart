@@ -336,6 +336,123 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todaySuffix => '(Today)';
 
   @override
+  String get checkOut => 'Check Out';
+
+  @override
+  String get denyEntry => 'Deny';
+
+  @override
+  String get denyVisitorTitle => 'Deny Visitor Entry';
+
+  @override
+  String get denyReasonHint =>
+      'Enter reason for denying entry (e.g. Unverified ID)...';
+
+  @override
+  String get confirmDeny => 'Confirm Denial';
+
+  @override
+  String get currentlyOnCompound => 'Currently on Compound';
+
+  @override
+  String get recentGateActivity => 'Gate History';
+
+  @override
+  String get noExpectedVisitors => 'No expected visitors matching your search.';
+
+  @override
+  String get noVisitorsOnCompound =>
+      'No visitors currently checked in on the compound.';
+
+  @override
+  String get walkInPedestrian => 'Walk-in / No Vehicle';
+
+  @override
+  String get passCodeLabel => 'Pass Code';
+
+  @override
+  String get verifyQrCodeTitle => 'Verify Visitor Pass Code';
+
+  @override
+  String get verifyQrCodeHint =>
+      'Enter pass code (e.g. VP-4823) or vehicle plate...';
+
+  @override
+  String get verifyButton => 'Search / Verify';
+
+  @override
+  String get myVisitorPasses => 'My Visitor Passes';
+
+  @override
+  String get createVisitorPassTitle => 'Create Visitor Pass';
+
+  @override
+  String get newVisitorPass => 'New Visitor Pass';
+
+  @override
+  String get noVisitorPassesYet =>
+      'No visitor passes created yet. Tap + to invite a guest.';
+
+  @override
+  String get visitorFullName => 'Visitor Full Name';
+
+  @override
+  String get visitorFullNameHint => 'e.g. Khalid Al-Ghamdi';
+
+  @override
+  String get visitorFullNameRequired => 'Please enter the visitor\'s name';
+
+  @override
+  String get visitorPhone => 'Visitor Phone Number';
+
+  @override
+  String get visitorPhoneHint => '+966 5X XXX XXXX';
+
+  @override
+  String get visitorPhoneRequired => 'Please enter the visitor\'s phone number';
+
+  @override
+  String get visitDateLabel => 'Visit Date';
+
+  @override
+  String get expectedArrivalTimeLabel => 'Expected Arrival Time';
+
+  @override
+  String get vehiclePlateOptional => 'Vehicle Plate Number (Optional)';
+
+  @override
+  String get vehiclePlateHint => 'e.g. ABC 4567';
+
+  @override
+  String get securityNotesOptional => 'Notes for Gate Security (Optional)';
+
+  @override
+  String get securityNotesHint => 'e.g. Delivery driver, family guest...';
+
+  @override
+  String get generateQrPass => 'Generate Visitor QR Pass';
+
+  @override
+  String get digitalGatePass => 'DIGITAL GATE PASS';
+
+  @override
+  String get showQrAtGate =>
+      'Present this QR pass at Al-Mohamedia Compound Main Gate';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String checkedInAt(String time) {
+    return 'Checked in at $time';
+  }
+
+  @override
+  String checkedOutAt(String time) {
+    return 'Checked out at $time';
+  }
+
+  @override
   String get housekeepingAndCleaning => 'Housekeeping & Cleaning';
 
   @override

@@ -7,7 +7,7 @@ enum VisitorPassStatus {
 }
 
 extension VisitorPassStatusX on VisitorPassStatus {
-  String get label {
+  String get displayNameEn {
     switch (this) {
       case VisitorPassStatus.expected:
         return 'Expected';
@@ -22,11 +22,43 @@ extension VisitorPassStatusX on VisitorPassStatus {
     }
   }
 
-  static VisitorPassStatus fromString(String value) {
-    switch (value) {
+  String get displayNameAr {
+    switch (this) {
+      case VisitorPassStatus.expected:
+        return 'متوقع';
+      case VisitorPassStatus.checkedIn:
+        return 'داخل المجمع';
+      case VisitorPassStatus.checkedOut:
+        return 'غادر المجمع';
+      case VisitorPassStatus.expired:
+        return 'منتهي';
+      case VisitorPassStatus.denied:
+        return 'مرفوض';
+    }
+  }
+
+  String toDbString() {
+    switch (this) {
+      case VisitorPassStatus.expected:
+        return 'expected';
+      case VisitorPassStatus.checkedIn:
+        return 'checkedIn';
+      case VisitorPassStatus.checkedOut:
+        return 'checkedOut';
+      case VisitorPassStatus.expired:
+        return 'expired';
+      case VisitorPassStatus.denied:
+        return 'denied';
+    }
+  }
+
+  static VisitorPassStatus fromString(String? value) {
+    switch (value?.trim()) {
       case 'checkedIn':
+      case 'checked_in':
         return VisitorPassStatus.checkedIn;
       case 'checkedOut':
+      case 'checked_out':
         return VisitorPassStatus.checkedOut;
       case 'expired':
         return VisitorPassStatus.expired;
@@ -45,6 +77,7 @@ class VisitorPassEntity {
   final String unitId;
   final String unitNumber;
   final String residentId;
+  final String residentEmail;
   final String residentName;
   final String visitorName;
   final String visitorPhone;
@@ -64,6 +97,7 @@ class VisitorPassEntity {
     required this.unitId,
     required this.unitNumber,
     required this.residentId,
+    this.residentEmail = '',
     required this.residentName,
     required this.visitorName,
     required this.visitorPhone,
@@ -78,18 +112,22 @@ class VisitorPassEntity {
   });
 
   VisitorPassEntity copyWith({
+    String? id,
+    String? passCode,
+    String? residentEmail,
     VisitorPassStatus? status,
     DateTime? checkInTime,
     DateTime? checkOutTime,
     String? securityNotes,
   }) {
     return VisitorPassEntity(
-      id: id,
-      passCode: passCode,
+      id: id ?? this.id,
+      passCode: passCode ?? this.passCode,
       compoundId: compoundId,
       unitId: unitId,
       unitNumber: unitNumber,
       residentId: residentId,
+      residentEmail: residentEmail ?? this.residentEmail,
       residentName: residentName,
       visitorName: visitorName,
       visitorPhone: visitorPhone,

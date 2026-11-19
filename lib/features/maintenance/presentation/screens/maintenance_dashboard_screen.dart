@@ -38,6 +38,25 @@ class MaintenanceDashboardScreen extends StatelessWidget {
           ),
           body: BlocBuilder<MaintenanceCubit, MaintenanceState>(
             builder: (context, mState) {
+              if (mState is MaintenanceLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.accentGold),
+                );
+              }
+
+              if (mState is MaintenanceError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      mState.message,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: AppColors.statusRejected),
+                    ),
+                  ),
+                );
+              }
+
               final allRequests = (mState is MaintenanceLoaded) ? mState.requests : <ServiceRequestEntity>[];
               final selectedCat = (mState is MaintenanceLoaded) ? mState.selectedCategory : null;
 

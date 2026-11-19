@@ -3,62 +3,67 @@ import '../repositories/visitor_repository.dart';
 
 class GetMyPassesUseCase {
   final VisitorRepository _repository;
-  GetMyPassesUseCase(this._repository);
+  const GetMyPassesUseCase(this._repository);
 
-  Stream<List<VisitorPassEntity>> call(String residentId) =>
-      _repository.getMyPasses(residentId);
+  Stream<List<VisitorPassEntity>> call({
+    required String residentEmail,
+    String? residentId,
+  }) =>
+      _repository.streamMyPasses(
+        residentEmail: residentEmail,
+        residentId: residentId,
+      );
 }
 
-class GetExpectedVisitorsUseCase {
+class GetCompoundPassesUseCase {
   final VisitorRepository _repository;
-  GetExpectedVisitorsUseCase(this._repository);
+  const GetCompoundPassesUseCase(this._repository);
 
-  Stream<List<VisitorPassEntity>> call() => _repository.getExpectedVisitors();
-}
-
-class GetCheckedInVisitorsUseCase {
-  final VisitorRepository _repository;
-  GetCheckedInVisitorsUseCase(this._repository);
-
-  Stream<List<VisitorPassEntity>> call() => _repository.getCheckedInVisitors();
+  Stream<List<VisitorPassEntity>> call({
+    String compoundId = 'compound_al_mohamedia',
+  }) =>
+      _repository.streamCompoundPasses(compoundId: compoundId);
 }
 
 class SearchVisitorsUseCase {
   final VisitorRepository _repository;
-  SearchVisitorsUseCase(this._repository);
+  const SearchVisitorsUseCase(this._repository);
 
-  Future<List<VisitorPassEntity>> call(String query) =>
-      _repository.searchVisitors(query);
+  Future<List<VisitorPassEntity>> call(
+    String query, {
+    String compoundId = 'compound_al_mohamedia',
+  }) =>
+      _repository.searchVisitors(query, compoundId: compoundId);
 }
 
 class CreateVisitorPassUseCase {
   final VisitorRepository _repository;
-  CreateVisitorPassUseCase(this._repository);
+  const CreateVisitorPassUseCase(this._repository);
 
   Future<VisitorPassEntity> call(VisitorPassEntity pass) =>
       _repository.createVisitorPass(pass);
 }
 
-class CheckInUseCase {
+class CheckInVisitorUseCase {
   final VisitorRepository _repository;
-  CheckInUseCase(this._repository);
+  const CheckInVisitorUseCase(this._repository);
 
-  Future<VisitorPassEntity> call(String passId, {String? notes}) =>
+  Future<void> call(String passId, {String? notes}) =>
       _repository.checkIn(passId, securityNotes: notes);
 }
 
-class CheckOutUseCase {
+class CheckOutVisitorUseCase {
   final VisitorRepository _repository;
-  CheckOutUseCase(this._repository);
+  const CheckOutVisitorUseCase(this._repository);
 
-  Future<VisitorPassEntity> call(String passId, {String? notes}) =>
+  Future<void> call(String passId, {String? notes}) =>
       _repository.checkOut(passId, securityNotes: notes);
 }
 
-class DenyEntryUseCase {
+class DenyVisitorEntryUseCase {
   final VisitorRepository _repository;
-  DenyEntryUseCase(this._repository);
+  const DenyVisitorEntryUseCase(this._repository);
 
-  Future<VisitorPassEntity> call(String passId, {required String notes}) =>
+  Future<void> call(String passId, {required String notes}) =>
       _repository.denyEntry(passId, notes: notes);
 }

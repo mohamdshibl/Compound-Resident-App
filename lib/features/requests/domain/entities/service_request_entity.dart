@@ -7,6 +7,7 @@ class ServiceRequestEntity {
   final String unitId;
   final String unitNumber;
   final String createdByUserId;
+  final String createdByEmail;
   final String createdByName;
   final String createdByRole;
   final String department;
@@ -34,6 +35,7 @@ class ServiceRequestEntity {
     required this.unitId,
     required this.unitNumber,
     required this.createdByUserId,
+    this.createdByEmail = '',
     required this.createdByName,
     required this.createdByRole,
     this.department = 'maintenance',
@@ -62,6 +64,7 @@ class ServiceRequestEntity {
     String? unitId,
     String? unitNumber,
     String? createdByUserId,
+    String? createdByEmail,
     String? createdByName,
     String? createdByRole,
     String? department,
@@ -89,6 +92,7 @@ class ServiceRequestEntity {
       unitId: unitId ?? this.unitId,
       unitNumber: unitNumber ?? this.unitNumber,
       createdByUserId: createdByUserId ?? this.createdByUserId,
+      createdByEmail: createdByEmail ?? this.createdByEmail,
       createdByName: createdByName ?? this.createdByName,
       createdByRole: createdByRole ?? this.createdByRole,
       department: department ?? this.department,

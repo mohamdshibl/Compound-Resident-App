@@ -10,12 +10,14 @@ class GetRequestsUseCase {
   Stream<List<ServiceRequestEntity>> stream({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
   }) {
     return repository.streamRequests(
       compoundId: compoundId,
       userId: userId,
+      userEmail: userEmail,
       department: department,
       category: category,
     );
@@ -24,6 +26,7 @@ class GetRequestsUseCase {
   Future<List<ServiceRequestEntity>> call({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
     RequestStatus? status,
@@ -31,6 +34,7 @@ class GetRequestsUseCase {
     return repository.getRequests(
       compoundId: compoundId,
       userId: userId,
+      userEmail: userEmail,
       department: department,
       category: category,
       status: status,
@@ -51,7 +55,10 @@ class UpdateRequestStatusUseCase {
   final MaintenanceRepository repository;
   const UpdateRequestStatusUseCase(this.repository);
 
-  Future<void> call({required String requestId, required RequestStatus newStatus}) {
+  Future<void> call({
+    required String requestId,
+    required RequestStatus newStatus,
+  }) {
     return repository.updateStatus(requestId: requestId, newStatus: newStatus);
   }
 }
@@ -77,7 +84,10 @@ class AddCommentUseCase {
   final MaintenanceRepository repository;
   const AddCommentUseCase(this.repository);
 
-  Future<void> call({required String requestId, required RequestCommentEntity comment}) {
+  Future<void> call({
+    required String requestId,
+    required RequestCommentEntity comment,
+  }) {
     return repository.addComment(requestId: requestId, comment: comment);
   }
 
@@ -90,7 +100,15 @@ class SubmitRatingUseCase {
   final MaintenanceRepository repository;
   const SubmitRatingUseCase(this.repository);
 
-  Future<void> call({required String requestId, required int rating, required String feedback}) {
-    return repository.submitRating(requestId: requestId, rating: rating, feedback: feedback);
+  Future<void> call({
+    required String requestId,
+    required int rating,
+    required String feedback,
+  }) {
+    return repository.submitRating(
+      requestId: requestId,
+      rating: rating,
+      feedback: feedback,
+    );
   }
 }

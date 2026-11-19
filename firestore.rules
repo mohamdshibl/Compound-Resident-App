@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function userDocExists() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function getUserRole() {
+      return userDocExists()
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : 'tenant';
+    }
+
+    function isSystemAdmin() {
+      return isAuthenticated() && getUserRole() == 'system_admin';
+    }
+
+    function isEmployee() {
+      return isAuthenticated() && getUserRole() in [
+        'security',
+        'maintenance',
+        'housekeeping',
+        'recreation',
+        'it_support',
+        'administration',
+        'finance',
+        'reception',
+        'system_admin'
+      ];
+    }
+
+    // Compounds & Units
+    match /compounds/{compoundId} {
+      allow read: if isAuthenticated();
+      allow write: if isSystemAdmin() || isEmployee();
+    }
+
+    match /buildings/{buildingId} {
+      allow read: if isAuthenticated();
+      allow write: if isSystemAdmin();
+    }
+
+    match /units/{unitId} {
+      allow read: if isAuthenticated();
+      allow write: if isSystemAdmin();
+    }
+
+    // Users
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() &&
+        (request.auth.uid == userId || isSystemAdmin());
+      allow delete: if isSystemAdmin();
+    }
+
+    // Service Requests (Maintenance, IT, Admin)
+    match /service_requests/{requestId} {
+      allow read: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.createdByUserId == request.auth.uid ||
+        resource.data.createdByEmail == request.auth.token.email
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.createdByUserId == request.auth.uid ||
+        resource.data.createdByEmail == request.auth.token.email
+      );
+      allow delete: if isSystemAdmin();
+
+      match /comments/{commentId} {
+        allow read, create: if isAuthenticated();
+        allow update, delete: if isSystemAdmin();
+      }
+    }
+
+    // Visitor Passes
+    match /visitor_passes/{passId} {
+      allow read: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.residentId == request.auth.uid ||
+        resource.data.residentEmail == request.auth.token.email
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.residentId == request.auth.uid ||
+        resource.data.residentEmail == request.auth.token.email
+      );
+      allow delete: if isSystemAdmin();
+    }
+
+    // Facilities
+    match /facilities/{facilityId} {
+      allow read: if isAuthenticated();
+      allow write: if isEmployee();
+    }
+
+    // Bookings (Recreation & Housekeeping)
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.userId == request.auth.uid ||
+        resource.data.userEmail == request.auth.token.email
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        isEmployee() ||
+        resource.data.userId == request.auth.uid ||
+        resource.data.userEmail == request.auth.token.email
+      );
+      allow delete: if isSystemAdmin();
+    }
+
+    // Ratings
+    match /ratings/{ratingId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSystemAdmin();
+    }
+  }
+}

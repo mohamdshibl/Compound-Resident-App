@@ -1,13 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/l10n/l10n_extension.dart';
+import '../../../../core/services/firebase_seeder_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
-class SystemAdminDashboardScreen extends StatelessWidget {
+class SystemAdminDashboardScreen extends StatefulWidget {
   const SystemAdminDashboardScreen({super.key});
+
+  @override
+  State<SystemAdminDashboardScreen> createState() =>
+      _SystemAdminDashboardScreenState();
+}
+
+class _SystemAdminDashboardScreenState
+    extends State<SystemAdminDashboardScreen> {
+  bool _isSeeding = false;
+
+  Future<void> _seedDatabase() async {
+    if (_isSeeding) return;
+    setState(() => _isSeeding = true);
+
+    try {
+      await sl<FirebaseSeederService>().seedDemoData();
+      if (!mounted) return;
+      final isAr = context.isArabic;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isAr
+                ? 'تمت تهيئة قاعدة بيانات Cloud Firestore بنجاح!'
+                : 'Cloud Firestore seeded successfully!',
+          ),
+          backgroundColor: AppColors.statusCompleted,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Seed failed: $e'),
+          backgroundColor: AppColors.statusRejected,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSeeding = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +148,14 @@ class SystemAdminDashboardScreen extends StatelessWidget {
                   icon: Icons.cloud_sync_rounded,
                   title: l10n.seedDemoDatabase,
                   subtitle: l10n.seedDemoDatabaseSubtitle,
-                  onTap: () {},
+                  trailing: _isSeeding
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : null,
+                  onTap: _seedDatabase,
                 ),
               ],
             ),
@@ -119,6 +170,7 @@ class SystemAdminDashboardScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    Widget? trailing,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -143,11 +195,12 @@ class SystemAdminDashboardScreen extends StatelessWidget {
           subtitle,
           style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 14,
-          color: AppColors.textMuted,
-        ),
+        trailing: trailing ??
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: AppColors.textMuted,
+            ),
         onTap: onTap,
       ),
     );

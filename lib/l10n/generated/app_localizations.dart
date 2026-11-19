@@ -710,6 +710,222 @@ abstract class AppLocalizations {
   /// **'(Today)'**
   String get todaySuffix;
 
+  /// No description provided for @checkOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Out'**
+  String get checkOut;
+
+  /// No description provided for @denyEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get denyEntry;
+
+  /// No description provided for @denyVisitorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny Visitor Entry'**
+  String get denyVisitorTitle;
+
+  /// No description provided for @denyReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter reason for denying entry (e.g. Unverified ID)...'**
+  String get denyReasonHint;
+
+  /// No description provided for @confirmDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Denial'**
+  String get confirmDeny;
+
+  /// No description provided for @currentlyOnCompound.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently on Compound'**
+  String get currentlyOnCompound;
+
+  /// No description provided for @recentGateActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate History'**
+  String get recentGateActivity;
+
+  /// No description provided for @noExpectedVisitors.
+  ///
+  /// In en, this message translates to:
+  /// **'No expected visitors matching your search.'**
+  String get noExpectedVisitors;
+
+  /// No description provided for @noVisitorsOnCompound.
+  ///
+  /// In en, this message translates to:
+  /// **'No visitors currently checked in on the compound.'**
+  String get noVisitorsOnCompound;
+
+  /// No description provided for @walkInPedestrian.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in / No Vehicle'**
+  String get walkInPedestrian;
+
+  /// No description provided for @passCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass Code'**
+  String get passCodeLabel;
+
+  /// No description provided for @verifyQrCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Visitor Pass Code'**
+  String get verifyQrCodeTitle;
+
+  /// No description provided for @verifyQrCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter pass code (e.g. VP-4823) or vehicle plate...'**
+  String get verifyQrCodeHint;
+
+  /// No description provided for @verifyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search / Verify'**
+  String get verifyButton;
+
+  /// No description provided for @myVisitorPasses.
+  ///
+  /// In en, this message translates to:
+  /// **'My Visitor Passes'**
+  String get myVisitorPasses;
+
+  /// No description provided for @createVisitorPassTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Visitor Pass'**
+  String get createVisitorPassTitle;
+
+  /// No description provided for @newVisitorPass.
+  ///
+  /// In en, this message translates to:
+  /// **'New Visitor Pass'**
+  String get newVisitorPass;
+
+  /// No description provided for @noVisitorPassesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No visitor passes created yet. Tap + to invite a guest.'**
+  String get noVisitorPassesYet;
+
+  /// No description provided for @visitorFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor Full Name'**
+  String get visitorFullName;
+
+  /// No description provided for @visitorFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Khalid Al-Ghamdi'**
+  String get visitorFullNameHint;
+
+  /// No description provided for @visitorFullNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the visitor\'s name'**
+  String get visitorFullNameRequired;
+
+  /// No description provided for @visitorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Visitor Phone Number'**
+  String get visitorPhone;
+
+  /// No description provided for @visitorPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+966 5X XXX XXXX'**
+  String get visitorPhoneHint;
+
+  /// No description provided for @visitorPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the visitor\'s phone number'**
+  String get visitorPhoneRequired;
+
+  /// No description provided for @visitDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit Date'**
+  String get visitDateLabel;
+
+  /// No description provided for @expectedArrivalTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected Arrival Time'**
+  String get expectedArrivalTimeLabel;
+
+  /// No description provided for @vehiclePlateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Plate Number (Optional)'**
+  String get vehiclePlateOptional;
+
+  /// No description provided for @vehiclePlateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. ABC 4567'**
+  String get vehiclePlateHint;
+
+  /// No description provided for @securityNotesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes for Gate Security (Optional)'**
+  String get securityNotesOptional;
+
+  /// No description provided for @securityNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Delivery driver, family guest...'**
+  String get securityNotesHint;
+
+  /// No description provided for @generateQrPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Visitor QR Pass'**
+  String get generateQrPass;
+
+  /// No description provided for @digitalGatePass.
+  ///
+  /// In en, this message translates to:
+  /// **'DIGITAL GATE PASS'**
+  String get digitalGatePass;
+
+  /// No description provided for @showQrAtGate.
+  ///
+  /// In en, this message translates to:
+  /// **'Present this QR pass at Al-Mohamedia Compound Main Gate'**
+  String get showQrAtGate;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @checkedInAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in at {time}'**
+  String checkedInAt(String time);
+
+  /// No description provided for @checkedOutAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked out at {time}'**
+  String checkedOutAt(String time);
+
   /// No description provided for @housekeepingAndCleaning.
   ///
   /// In en, this message translates to:

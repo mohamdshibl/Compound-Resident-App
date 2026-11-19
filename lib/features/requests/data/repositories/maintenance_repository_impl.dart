@@ -15,6 +15,7 @@ class MaintenanceRepositoryImpl implements MaintenanceRepository {
   Future<List<ServiceRequestEntity>> getRequests({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
     RequestStatus? status,
@@ -22,6 +23,7 @@ class MaintenanceRepositoryImpl implements MaintenanceRepository {
     return remoteDataSource.getRequests(
       compoundId: compoundId,
       userId: userId,
+      userEmail: userEmail,
       department: department,
       category: category,
       status: status,
@@ -32,12 +34,14 @@ class MaintenanceRepositoryImpl implements MaintenanceRepository {
   Stream<List<ServiceRequestEntity>> streamRequests({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
   }) {
     return remoteDataSource.streamRequests(
       compoundId: compoundId,
       userId: userId,
+      userEmail: userEmail,
       department: department,
       category: category,
     );
@@ -50,7 +54,8 @@ class MaintenanceRepositoryImpl implements MaintenanceRepository {
 
   @override
   Future<ServiceRequestEntity> createRequest(ServiceRequestEntity request) {
-    return remoteDataSource.createRequest(ServiceRequestModel.fromEntity(request));
+    return remoteDataSource
+        .createRequest(ServiceRequestModel.fromEntity(request));
   }
 
   @override

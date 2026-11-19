@@ -167,7 +167,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
     return BlocConsumer<MaintenanceCubit, MaintenanceState>(
       listener: (context, state) {
-        if (state is MaintenanceLoaded && state.successMessage != null) {
+        if (state is MaintenanceLoaded && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: AppColors.statusRejected,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        } else if (state is MaintenanceLoaded && state.successMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.successMessage!),

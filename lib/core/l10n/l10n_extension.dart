@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import '../../features/auth/domain/entities/user_entity.dart';
 import '../../features/requests/domain/entities/request_enums.dart';
+import '../../features/visitor_management/domain/entities/visitor_pass_entity.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 extension BuildContextL10nX on BuildContext {
@@ -37,6 +38,11 @@ extension RequestPriorityL10nX on RequestPriority {
 }
 
 extension RequestStatusL10nX on RequestStatus {
+  String localizedName(BuildContext context) =>
+      context.isArabic ? displayNameAr : displayNameEn;
+}
+
+extension VisitorPassStatusL10nX on VisitorPassStatus {
   String localizedName(BuildContext context) =>
       context.isArabic ? displayNameAr : displayNameEn;
 }

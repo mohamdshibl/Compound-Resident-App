@@ -8,6 +8,7 @@ class VisitorPassModel extends VisitorPassEntity {
     required super.unitId,
     required super.unitNumber,
     required super.residentId,
+    super.residentEmail = '',
     required super.residentName,
     required super.visitorName,
     required super.visitorPhone,
@@ -21,29 +22,37 @@ class VisitorPassModel extends VisitorPassEntity {
     required super.createdAt,
   });
 
-  factory VisitorPassModel.fromJson(Map<String, dynamic> json) {
+  factory VisitorPassModel.fromJson(
+    Map<String, dynamic> json, {
+    String? id,
+  }) {
     return VisitorPassModel(
-      id: json['id'] as String,
-      passCode: json['passCode'] as String,
-      compoundId: json['compoundId'] as String,
-      unitId: json['unitId'] as String,
-      unitNumber: json['unitNumber'] as String,
-      residentId: json['residentId'] as String,
-      residentName: json['residentName'] as String,
-      visitorName: json['visitorName'] as String,
-      visitorPhone: json['visitorPhone'] as String,
-      visitDate: DateTime.parse(json['visitDate'] as String),
-      expectedArrivalTime: json['expectedArrivalTime'] as String,
+      id: id ?? json['id'] as String? ?? '',
+      passCode: json['passCode'] as String? ?? 'VP-0000',
+      compoundId: json['compoundId'] as String? ?? 'compound_al_mohamedia',
+      unitId: json['unitId'] as String? ?? '',
+      unitNumber: json['unitNumber'] as String? ?? '',
+      residentId: json['residentId'] as String? ?? '',
+      residentEmail: json['residentEmail'] as String? ?? '',
+      residentName: json['residentName'] as String? ?? '',
+      visitorName: json['visitorName'] as String? ?? '',
+      visitorPhone: json['visitorPhone'] as String? ?? '',
+      visitDate: json['visitDate'] != null
+          ? DateTime.tryParse(json['visitDate'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+      expectedArrivalTime: json['expectedArrivalTime'] as String? ?? '18:00',
       vehiclePlate: json['vehiclePlate'] as String?,
-      status: VisitorPassStatusX.fromString(json['status'] as String),
+      status: VisitorPassStatusX.fromString(json['status'] as String?),
       checkInTime: json['checkInTime'] != null
-          ? DateTime.parse(json['checkInTime'] as String)
+          ? DateTime.tryParse(json['checkInTime'].toString())
           : null,
       checkOutTime: json['checkOutTime'] != null
-          ? DateTime.parse(json['checkOutTime'] as String)
+          ? DateTime.tryParse(json['checkOutTime'].toString())
           : null,
       securityNotes: json['securityNotes'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now()
+          : DateTime.now(),
     );
   }
 
@@ -55,13 +64,14 @@ class VisitorPassModel extends VisitorPassEntity {
       'unitId': unitId,
       'unitNumber': unitNumber,
       'residentId': residentId,
+      'residentEmail': residentEmail.toLowerCase(),
       'residentName': residentName,
       'visitorName': visitorName,
       'visitorPhone': visitorPhone,
       'visitDate': visitDate.toIso8601String(),
       'expectedArrivalTime': expectedArrivalTime,
       'vehiclePlate': vehiclePlate,
-      'status': _statusToString(status),
+      'status': status.toDbString(),
       'checkInTime': checkInTime?.toIso8601String(),
       'checkOutTime': checkOutTime?.toIso8601String(),
       'securityNotes': securityNotes,
@@ -77,6 +87,7 @@ class VisitorPassModel extends VisitorPassEntity {
       unitId: entity.unitId,
       unitNumber: entity.unitNumber,
       residentId: entity.residentId,
+      residentEmail: entity.residentEmail,
       residentName: entity.residentName,
       visitorName: entity.visitorName,
       visitorPhone: entity.visitorPhone,
@@ -89,20 +100,5 @@ class VisitorPassModel extends VisitorPassEntity {
       securityNotes: entity.securityNotes,
       createdAt: entity.createdAt,
     );
-  }
-
-  static String _statusToString(VisitorPassStatus status) {
-    switch (status) {
-      case VisitorPassStatus.expected:
-        return 'expected';
-      case VisitorPassStatus.checkedIn:
-        return 'checkedIn';
-      case VisitorPassStatus.checkedOut:
-        return 'checkedOut';
-      case VisitorPassStatus.expired:
-        return 'expired';
-      case VisitorPassStatus.denied:
-        return 'denied';
-    }
   }
 }

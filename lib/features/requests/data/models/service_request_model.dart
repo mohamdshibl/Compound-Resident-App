@@ -9,6 +9,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
     required super.unitId,
     required super.unitNumber,
     required super.createdByUserId,
+    super.createdByEmail = '',
     required super.createdByName,
     required super.createdByRole,
     super.department = 'maintenance',
@@ -41,6 +42,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
       unitId: json['unitId'] as String? ?? '',
       unitNumber: json['unitNumber'] as String? ?? '',
       createdByUserId: json['createdByUserId'] as String? ?? '',
+      createdByEmail: json['createdByEmail'] as String? ?? '',
       createdByName: json['createdByName'] as String? ?? '',
       createdByRole: json['createdByRole'] as String? ?? 'owner',
       department: json['department'] as String? ?? 'maintenance',
@@ -50,15 +52,14 @@ class ServiceRequestModel extends ServiceRequestEntity {
       priority: RequestPriority.fromString(json['priority'] as String?),
       preferredDate: json['preferredDate'] != null
           ? DateTime.tryParse(json['preferredDate'].toString()) ??
-                DateTime.now()
+              DateTime.now()
           : DateTime.now(),
       preferredTimeSlot:
           json['preferredTimeSlot'] as String? ?? '09:00 - 12:00',
       currentStatus: RequestStatus.fromString(json['currentStatus'] as String?),
       assignedEmployeeId: json['assignedEmployeeId'] as String?,
       assignedEmployeeName: json['assignedEmployeeName'] as String?,
-      attachmentUrls:
-          (json['attachmentUrls'] as List<dynamic>?)
+      attachmentUrls: (json['attachmentUrls'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -83,6 +84,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
       'unitId': unitId,
       'unitNumber': unitNumber,
       'createdByUserId': createdByUserId,
+      'createdByEmail': createdByEmail,
       'createdByName': createdByName,
       'createdByRole': createdByRole,
       'department': department,
@@ -113,6 +115,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
       unitId: entity.unitId,
       unitNumber: entity.unitNumber,
       createdByUserId: entity.createdByUserId,
+      createdByEmail: entity.createdByEmail,
       createdByName: entity.createdByName,
       createdByRole: entity.createdByRole,
       department: entity.department,

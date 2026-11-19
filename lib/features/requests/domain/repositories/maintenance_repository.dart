@@ -6,6 +6,7 @@ abstract class MaintenanceRepository {
   Future<List<ServiceRequestEntity>> getRequests({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
     RequestStatus? status,
@@ -14,6 +15,7 @@ abstract class MaintenanceRepository {
   Stream<List<ServiceRequestEntity>> streamRequests({
     String? compoundId,
     String? userId,
+    String? userEmail,
     String? department,
     RequestCategory? category,
   });

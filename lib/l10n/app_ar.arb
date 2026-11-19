@@ -149,6 +149,52 @@
   "statusExpected": "متوقع",
   "checkIn": "تسجيل دخول",
   "todaySuffix": "(اليوم)",
+  "checkOut": "تسجيل خروج",
+  "denyEntry": "رفض",
+  "denyVisitorTitle": "رفض دخول الزائر",
+  "denyReasonHint": "أدخل سبب رفض الدخول (مثال: عدم وجود إثبات هوية)...",
+  "confirmDeny": "تأكيد الرفض",
+  "currentlyOnCompound": "متواجدون داخل المجمع حالياً",
+  "recentGateActivity": "سجل البوابة",
+  "noExpectedVisitors": "لا يوجد زوار متوقعون يطابقون البحث.",
+  "noVisitorsOnCompound": "لا يوجد زوار مسجلون داخل المجمع حالياً.",
+  "walkInPedestrian": "بدون مركبة",
+  "passCodeLabel": "رمز التصريح",
+  "verifyQrCodeTitle": "التحقق من رمز تصريح الزائر",
+  "verifyQrCodeHint": "أدخل رمز التصريح (مثال VP-4823) أو رقم اللوحة...",
+  "verifyButton": "بحث / تحقق",
+  "myVisitorPasses": "تصاريح الزوار الخاصة بي",
+  "createVisitorPassTitle": "إصدار تصريح زائر",
+  "newVisitorPass": "تصريح زائر جديد",
+  "noVisitorPassesYet": "لم يتم إصدار تصاريح زوار بعد. اضغط + لدعوة ضيف.",
+  "visitorFullName": "اسم الزائر الكامل",
+  "visitorFullNameHint": "مثال: خالد الغامدي",
+  "visitorFullNameRequired": "يرجى إدخال اسم الزائر",
+  "visitorPhone": "رقم جوال الزائر",
+  "visitorPhoneHint": "+966 5X XXX XXXX",
+  "visitorPhoneRequired": "يرجى إدخال رقم جوال الزائر",
+  "visitDateLabel": "تاريخ الزيارة",
+  "expectedArrivalTimeLabel": "وقت الوصول المتوقع",
+  "vehiclePlateOptional": "رقم لوحة المركبة (اختياري)",
+  "vehiclePlateHint": "مثال: ABC 4567",
+  "securityNotesOptional": "ملاحظات لأمن البوابة (اختياري)",
+  "securityNotesHint": "مثال: ضيف عائلي، مندوب توصيل...",
+  "generateQrPass": "إصدار تصريح الدخول ورمز QR",
+  "digitalGatePass": "تصريح دخول إلكتروني",
+  "showQrAtGate": "أبرز رمز QR هذا عند البوابة الرئيسية لمجمع المحمدية",
+  "close": "إغلاق",
+  "checkedInAt": "وقت الدخول: {time}",
+  "@checkedInAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "checkedOutAt": "وقت الخروج: {time}",
+  "@checkedOutAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
 
   "housekeepingAndCleaning": "النظافة المنزلية",
   "housekeepingSupervisorFallback": "مشرفة النظافة",

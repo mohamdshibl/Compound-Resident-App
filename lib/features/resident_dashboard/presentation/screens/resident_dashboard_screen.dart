@@ -130,7 +130,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    isOwner ? l10n.ownerBadge : l10n.tenantBadge,
+                                    isOwner
+                                        ? l10n.ownerBadge
+                                        : l10n.tenantBadge,
                                     style: const TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
@@ -181,7 +183,7 @@ class ResidentDashboardScreen extends StatelessWidget {
                       color: AppColors.accentTeal,
                       title: l10n.visitorPass,
                       subtitle: l10n.visitorPassSubtitle,
-                      onTap: () {},
+                      onTap: () => context.push('/my-visitor-passes'),
                     ),
                     _buildServiceTile(
                       icon: Icons.handyman_outlined,
@@ -239,6 +241,41 @@ class ResidentDashboardScreen extends StatelessWidget {
                 // Real Requests Stream from MaintenanceCubit
                 BlocBuilder<MaintenanceCubit, MaintenanceState>(
                   builder: (context, mState) {
+                    if (mState is MaintenanceLoading) {
+                      return const Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.accentGold,
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (mState is MaintenanceError) {
+                      return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.statusRejected.withValues(
+                            alpha: 0.08,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.statusRejected.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          mState.message,
+                          style: const TextStyle(
+                            color: AppColors.statusRejected,
+                            fontSize: 12,
+                          ),
+                        ),
+                      );
+                    }
+
                     final requests = (mState is MaintenanceLoaded)
                         ? mState.requests
                         : <ServiceRequestEntity>[];
@@ -254,7 +291,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             l10n.noActiveRequests,
-                            style: const TextStyle(color: AppColors.textSecondary),
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ),
                       );

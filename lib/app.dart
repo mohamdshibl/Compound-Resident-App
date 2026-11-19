@@ -6,7 +6,9 @@ import 'core/l10n/locale_cubit.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/auth/presentation/cubit/auth_state.dart';
 import 'features/requests/presentation/cubit/maintenance_cubit.dart';
+import 'features/visitor_management/presentation/cubit/visitor_cubit.dart';
 import 'l10n/generated/app_localizations.dart';
 
 class CompoundResidentApp extends StatefulWidget {
@@ -20,6 +22,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
   late final LocaleCubit _localeCubit;
   late final AuthCubit _authCubit;
   late final MaintenanceCubit _maintenanceCubit;
+  late final VisitorCubit _visitorCubit;
   late final GoRouter _router;
 
   @override
@@ -27,7 +30,8 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
     super.initState();
     _localeCubit = sl<LocaleCubit>();
     _authCubit = sl<AuthCubit>();
-    _maintenanceCubit = sl<MaintenanceCubit>()..listenToRequests();
+    _maintenanceCubit = sl<MaintenanceCubit>();
+    _visitorCubit = sl<VisitorCubit>();
     _router = AppRouter.createRouter(_authCubit);
   }
 
@@ -36,7 +40,27 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
     _localeCubit.close();
     _authCubit.close();
     _maintenanceCubit.close();
+    _visitorCubit.close();
     super.dispose();
+  }
+
+  void _syncFirestoreStreams(AuthState authState) {
+    if (authState is Authenticated) {
+      final user = authState.user;
+      if (user.isResident) {
+        _maintenanceCubit.listenToRequests(userEmail: user.email);
+        _visitorCubit.listenToMyPasses(
+          residentEmail: user.email,
+          residentId: user.id,
+        );
+      } else {
+        _maintenanceCubit.listenToRequests(compoundId: user.compoundId);
+        _visitorCubit.listenToCompoundPasses(compoundId: user.compoundId);
+      }
+    } else if (authState is Unauthenticated) {
+      _maintenanceCubit.clear();
+      _visitorCubit.clear();
+    }
   }
 
   @override
@@ -46,19 +70,23 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
         BlocProvider<LocaleCubit>.value(value: _localeCubit),
         BlocProvider<AuthCubit>.value(value: _authCubit),
         BlocProvider<MaintenanceCubit>.value(value: _maintenanceCubit),
+        BlocProvider<VisitorCubit>.value(value: _visitorCubit),
       ],
-      child: BlocBuilder<LocaleCubit, Locale>(
-        builder: (context, locale) {
-          return MaterialApp.router(
-            onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appTitle,
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            routerConfig: _router,
-            locale: locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-          );
-        },
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: (context, authState) => _syncFirestoreStreams(authState),
+        child: BlocBuilder<LocaleCubit, Locale>(
+          builder: (context, locale) {
+            return MaterialApp.router(
+              onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appTitle,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              routerConfig: _router,
+              locale: locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            );
+          },
+        ),
       ),
     );
   }
