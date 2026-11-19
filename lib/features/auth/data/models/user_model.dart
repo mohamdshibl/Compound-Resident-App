@@ -26,9 +26,10 @@ class UserModel extends UserEntity {
       phone: json['phone'] as String? ?? '',
       role: UserRole.fromString(json['role'] as String?),
       department: json['department'] as String?,
-      compoundId: json['compoundId'] as String? ?? 'compound_al_nakheel',
-      compoundName: json['compoundName'] as String? ?? 'Al-Nakheel Prestige Living',
-      authorizedUnitIds: (json['authorizedUnitIds'] as List<dynamic>?)
+      compoundId: json['compoundId'] as String? ?? 'compound_al_mohamedia',
+      compoundName: json['compoundName'] as String? ?? 'Al-Mohamedia Compound',
+      authorizedUnitIds:
+          (json['authorizedUnitIds'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],

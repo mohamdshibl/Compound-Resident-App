@@ -7,7 +7,10 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel?> getCurrentUser();
-  Future<UserModel> loginWithEmailPassword({required String email, required String password});
+  Future<UserModel> loginWithEmailPassword({
+    required String email,
+    required String password,
+  });
   Future<UserModel> loginWithDemoAccount(UserRole role);
   Future<void> logout();
   Stream<UserModel?> get authStateChanges;
@@ -24,8 +27,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({
     fb.FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firestore,
-  })  : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  }) : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<UserModel?> getCurrentUser() async {
@@ -52,7 +55,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       fullName: fbUser.displayName ?? 'Resident User',
       phone: fbUser.phoneNumber ?? '',
       role: UserRole.owner,
-      compoundId: 'compound_al_nakheel',
+      compoundId: 'compound_al_mohamedia',
     );
   }
 
@@ -91,7 +94,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         fullName: credential.user?.displayName ?? email.split('@').first,
         phone: credential.user?.phoneNumber ?? '',
         role: UserRole.owner,
-        compoundId: 'compound_al_nakheel',
+        compoundId: 'compound_al_mohamedia',
       );
       await _firestore.collection('users').doc(uid).set(newModel.toJson());
       _currentDemoUser = newModel;

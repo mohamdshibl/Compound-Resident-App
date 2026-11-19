@@ -58,11 +58,13 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
   final List<ServiceRequestModel> _inMemoryRequests = [];
   final Map<String, List<RequestCommentModel>> _inMemoryComments = {};
 
-  final _requestsStreamController = StreamController<List<ServiceRequestModel>>.broadcast();
-  final Map<String, StreamController<List<RequestCommentModel>>> _commentsStreamControllers = {};
+  final _requestsStreamController =
+      StreamController<List<ServiceRequestModel>>.broadcast();
+  final Map<String, StreamController<List<RequestCommentModel>>>
+  _commentsStreamControllers = {};
 
   MaintenanceRemoteDataSourceImpl({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance {
+    : _firestore = firestore ?? FirebaseFirestore.instance {
     _initSeedData();
   }
 
@@ -72,7 +74,7 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     final r1 = ServiceRequestModel(
       id: 'req_2026_1042',
       requestNumber: 'REQ-2026-1042',
-      compoundId: 'compound_al_nakheel',
+      compoundId: 'compound_al_mohamedia',
       unitId: 'unit_v104',
       unitNumber: 'V-104',
       createdByUserId: 'usr_owner_tarek',
@@ -81,7 +83,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
       department: 'maintenance',
       category: RequestCategory.airConditioning,
       title: 'Master Bedroom AC Not Cooling',
-      description: 'Central AC is blowing warm air and making a low humming noise since yesterday evening.',
+      description:
+          'Central AC is blowing warm air and making a low humming noise since yesterday evening.',
       priority: RequestPriority.high,
       preferredDate: now.add(const Duration(days: 1)),
       preferredTimeSlot: '14:00 - 16:00',
@@ -96,7 +99,7 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     final r2 = ServiceRequestModel(
       id: 'req_2026_1049',
       requestNumber: 'REQ-2026-1049',
-      compoundId: 'compound_al_nakheel',
+      compoundId: 'compound_al_mohamedia',
       unitId: 'unit_b2_301',
       unitNumber: 'B2-301',
       createdByUserId: 'usr_tenant_sara',
@@ -118,7 +121,7 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     final r3 = ServiceRequestModel(
       id: 'req_2026_1030',
       requestNumber: 'REQ-2026-1030',
-      compoundId: 'compound_al_nakheel',
+      compoundId: 'compound_al_mohamedia',
       unitId: 'unit_v104',
       unitNumber: 'V-104',
       createdByUserId: 'usr_owner_tarek',
@@ -127,7 +130,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
       department: 'maintenance',
       category: RequestCategory.electrical,
       title: 'Garden Floodlight Bulb Replacement',
-      description: 'Two LED perimeter lights flickered and stopped turning on with the timer.',
+      description:
+          'Two LED perimeter lights flickered and stopped turning on with the timer.',
       priority: RequestPriority.low,
       preferredDate: now.subtract(const Duration(days: 2)),
       preferredTimeSlot: '16:00 - 18:00',
@@ -136,7 +140,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
       assignedEmployeeName: 'Eng. Hassan Al-Najjar',
       hasRating: true,
       ratingValue: 5,
-      ratingFeedback: 'Prompt replacement and tested the timer. Excellent service.',
+      ratingFeedback:
+          'Prompt replacement and tested the timer. Excellent service.',
       commentsCount: 1,
       createdAt: now.subtract(const Duration(days: 3)),
       updatedAt: now.subtract(const Duration(days: 2)),
@@ -151,7 +156,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
         senderId: 'usr_maint_hassan',
         senderName: 'Eng. Hassan Al-Najjar',
         senderRole: 'maintenance',
-        message: 'Hello Dr. Tarek. We have received your AC ticket. Technician Mahmoud will arrive tomorrow at 2:00 PM with the pressure gauge and refrigerant kit.',
+        message:
+            'Hello Dr. Tarek. We have received your AC ticket. Technician Mahmoud will arrive tomorrow at 2:00 PM with the pressure gauge and refrigerant kit.',
         createdAt: now.subtract(const Duration(hours: 3)),
       ),
       RequestCommentModel(
@@ -160,7 +166,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
         senderId: 'usr_owner_tarek',
         senderName: 'Dr. Tarek Mansour',
         senderRole: 'owner',
-        message: 'Thank you Hassan. The side villa gate will be open for Mahmoud.',
+        message:
+            'Thank you Hassan. The side villa gate will be open for Mahmoud.',
         createdAt: now.subtract(const Duration(hours: 2)),
       ),
     ];
@@ -173,7 +180,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
   void _notifyComments(String requestId) {
     final list = _inMemoryComments[requestId] ?? [];
     if (!_commentsStreamControllers.containsKey(requestId)) {
-      _commentsStreamControllers[requestId] = StreamController<List<RequestCommentModel>>.broadcast();
+      _commentsStreamControllers[requestId] =
+          StreamController<List<RequestCommentModel>>.broadcast();
     }
     _commentsStreamControllers[requestId]!.add(List.unmodifiable(list));
   }
@@ -189,13 +197,23 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     // Attempt Firestore fetch
     try {
       Query query = _firestore.collection('service_requests');
-      if (compoundId != null) query = query.where('compoundId', isEqualTo: compoundId);
-      if (userId != null) query = query.where('createdByUserId', isEqualTo: userId);
-      if (department != null) query = query.where('department', isEqualTo: department);
+      if (compoundId != null)
+        query = query.where('compoundId', isEqualTo: compoundId);
+      if (userId != null)
+        query = query.where('createdByUserId', isEqualTo: userId);
+      if (department != null)
+        query = query.where('department', isEqualTo: department);
 
       final snapshot = await query.get();
       if (snapshot.docs.isNotEmpty) {
-        final docs = snapshot.docs.map((d) => ServiceRequestModel.fromJson(d.data() as Map<String, dynamic>, id: d.id)).toList();
+        final docs = snapshot.docs
+            .map(
+              (d) => ServiceRequestModel.fromJson(
+                d.data() as Map<String, dynamic>,
+                id: d.id,
+              ),
+            )
+            .toList();
         return docs;
       }
     } catch (_) {}
@@ -228,8 +246,7 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
         if (department != null && r.department != department) return false;
         if (category != null && r.category != category) return false;
         return true;
-      }).toList()
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      }).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     });
   }
 
@@ -254,7 +271,10 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     _notifyRequests();
 
     try {
-      await _firestore.collection('service_requests').doc(request.id).set(request.toJson());
+      await _firestore
+          .collection('service_requests')
+          .doc(request.id)
+          .set(request.toJson());
     } catch (_) {}
 
     return request;
@@ -325,7 +345,9 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     final idx = _inMemoryRequests.indexWhere((r) => r.id == requestId);
     if (idx != -1) {
       _inMemoryRequests[idx] = ServiceRequestModel.fromEntity(
-        _inMemoryRequests[idx].copyWith(commentsCount: _inMemoryComments[requestId]!.length),
+        _inMemoryRequests[idx].copyWith(
+          commentsCount: _inMemoryComments[requestId]!.length,
+        ),
       );
       _notifyRequests();
     }
@@ -370,7 +392,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
   @override
   Stream<List<RequestCommentModel>> streamComments(String requestId) {
     if (!_commentsStreamControllers.containsKey(requestId)) {
-      _commentsStreamControllers[requestId] = StreamController<List<RequestCommentModel>>.broadcast();
+      _commentsStreamControllers[requestId] =
+          StreamController<List<RequestCommentModel>>.broadcast();
     }
     Timer.run(() => _notifyComments(requestId));
     return _commentsStreamControllers[requestId]!.stream;

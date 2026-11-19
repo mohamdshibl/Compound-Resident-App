@@ -30,11 +30,14 @@ class ServiceRequestModel extends ServiceRequestEntity {
     required super.updatedAt,
   });
 
-  factory ServiceRequestModel.fromJson(Map<String, dynamic> json, {String? id}) {
+  factory ServiceRequestModel.fromJson(
+    Map<String, dynamic> json, {
+    String? id,
+  }) {
     return ServiceRequestModel(
       id: id ?? json['id'] as String? ?? '',
       requestNumber: json['requestNumber'] as String? ?? '',
-      compoundId: json['compoundId'] as String? ?? 'compound_al_nakheel',
+      compoundId: json['compoundId'] as String? ?? 'compound_al_mohamedia',
       unitId: json['unitId'] as String? ?? '',
       unitNumber: json['unitNumber'] as String? ?? '',
       createdByUserId: json['createdByUserId'] as String? ?? '',
@@ -46,13 +49,16 @@ class ServiceRequestModel extends ServiceRequestEntity {
       description: json['description'] as String? ?? '',
       priority: RequestPriority.fromString(json['priority'] as String?),
       preferredDate: json['preferredDate'] != null
-          ? DateTime.tryParse(json['preferredDate'].toString()) ?? DateTime.now()
+          ? DateTime.tryParse(json['preferredDate'].toString()) ??
+                DateTime.now()
           : DateTime.now(),
-      preferredTimeSlot: json['preferredTimeSlot'] as String? ?? '09:00 - 12:00',
+      preferredTimeSlot:
+          json['preferredTimeSlot'] as String? ?? '09:00 - 12:00',
       currentStatus: RequestStatus.fromString(json['currentStatus'] as String?),
       assignedEmployeeId: json['assignedEmployeeId'] as String?,
       assignedEmployeeName: json['assignedEmployeeName'] as String?,
-      attachmentUrls: (json['attachmentUrls'] as List<dynamic>?)
+      attachmentUrls:
+          (json['attachmentUrls'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],

@@ -153,7 +153,7 @@ class UserEntity {
     required this.role,
     this.department,
     required this.compoundId,
-    this.compoundName = 'Al-Nakheel Prestige Living',
+    this.compoundName = 'Al-Mohamedia Compound',
     this.authorizedUnitIds = const [],
     this.primaryUnitNumber,
     this.avatarUrl,

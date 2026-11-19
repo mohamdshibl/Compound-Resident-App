@@ -28,17 +28,27 @@ class ResidentDashboardScreen extends StatelessWidget {
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.apartment_rounded, color: AppColors.accentGold, size: 20),
+                const Icon(
+                  Icons.apartment_rounded,
+                  color: AppColors.accentGold,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
-                  user?.compoundName ?? 'Al-Nakheel Prestige',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  user?.compoundName ?? 'Al-Mohamedia Compound',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: AppColors.accentGold,
+                ),
                 tooltip: 'Sign Out',
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
@@ -98,9 +108,14 @@ class ResidentDashboardScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 6),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isOwner ? AppColors.accentGold : AppColors.accentTeal,
+                                    color: isOwner
+                                        ? AppColors.accentGold
+                                        : AppColors.accentTeal,
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -195,8 +210,15 @@ class ResidentDashboardScreen extends StatelessWidget {
                       ),
                     ),
                     TextButton.icon(
-                      icon: const Icon(Icons.add, size: 16, color: AppColors.accentTeal),
-                      label: const Text('New Request', style: TextStyle(color: AppColors.accentTeal)),
+                      icon: const Icon(
+                        Icons.add,
+                        size: 16,
+                        color: AppColors.accentTeal,
+                      ),
+                      label: const Text(
+                        'New Request',
+                        style: TextStyle(color: AppColors.accentTeal),
+                      ),
                       onPressed: () => context.push('/create-request'),
                     ),
                   ],
@@ -206,7 +228,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                 // Real Requests Stream from MaintenanceCubit
                 BlocBuilder<MaintenanceCubit, MaintenanceState>(
                   builder: (context, mState) {
-                    final requests = (mState is MaintenanceLoaded) ? mState.requests : <ServiceRequestEntity>[];
+                    final requests = (mState is MaintenanceLoaded)
+                        ? mState.requests
+                        : <ServiceRequestEntity>[];
 
                     if (requests.isEmpty) {
                       return Container(
@@ -229,7 +253,8 @@ class ResidentDashboardScreen extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: requests.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: 10),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final req = requests[index];
                         return _buildRequestCard(context, req);
@@ -264,7 +289,10 @@ class ResidentDashboardScreen extends StatelessWidget {
                 color: AppColors.statusAssigned.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(req.category.iconEmoji, style: const TextStyle(fontSize: 22)),
+              child: Text(
+                req.category.iconEmoji,
+                style: const TextStyle(fontSize: 22),
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -284,7 +312,10 @@ class ResidentDashboardScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${req.requestNumber} • ${req.preferredTimeSlot}',
-                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -328,11 +359,7 @@ class ResidentDashboardScreen extends StatelessWidget {
       ),
       child: Text(
         status.displayNameEn.toUpperCase(),
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: fg,
-        ),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: fg),
       ),
     );
   }
@@ -379,7 +406,10 @@ class ResidentDashboardScreen extends StatelessWidget {
               subtitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),

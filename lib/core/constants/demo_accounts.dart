@@ -33,11 +33,12 @@ class DemoAccounts {
         fullNameAr: 'د. طارق منصور',
         phone: '+966 50 123 4567',
         role: UserRole.owner,
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
         authorizedUnitIds: ['unit_v104'],
         primaryUnitNumber: 'V-104',
-        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -54,11 +55,12 @@ class DemoAccounts {
         fullNameAr: 'سارة الحسيني',
         phone: '+966 55 987 6543',
         role: UserRole.tenant,
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
         authorizedUnitIds: ['unit_b2_301'],
         primaryUnitNumber: 'B2-301',
-        avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -76,9 +78,10 @@ class DemoAccounts {
         phone: '+966 50 333 4455',
         role: UserRole.security,
         department: 'security',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -96,9 +99,10 @@ class DemoAccounts {
         phone: '+966 54 222 1100',
         role: UserRole.maintenance,
         department: 'maintenance',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -116,9 +120,10 @@ class DemoAccounts {
         phone: '+966 56 777 8899',
         role: UserRole.housekeeping,
         department: 'housekeeping',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -136,9 +141,10 @@ class DemoAccounts {
         phone: '+966 59 111 2233',
         role: UserRole.recreation,
         department: 'recreation',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -156,9 +162,10 @@ class DemoAccounts {
         phone: '+966 55 444 3322',
         role: UserRole.itSupport,
         department: 'it_support',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -176,9 +183,10 @@ class DemoAccounts {
         phone: '+966 50 888 9900',
         role: UserRole.administration,
         department: 'administration',
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
       ),
     ),
 
@@ -195,16 +203,19 @@ class DemoAccounts {
         fullNameAr: 'مدير النظام الرئيسي',
         phone: '+966 50 000 0000',
         role: UserRole.systemAdmin,
-        compoundId: 'compound_al_nakheel',
-        compoundName: 'Al-Nakheel Prestige Living',
-        avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80',
+        compoundId: 'compound_al_mohamedia',
+        compoundName: 'Al-Mohamedia Compound',
+        avatarUrl:
+            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80',
       ),
     ),
   ];
 
   static DemoAccount? findByEmail(String email) {
     try {
-      return list.firstWhere((a) => a.email.toLowerCase() == email.toLowerCase().trim());
+      return list.firstWhere(
+        (a) => a.email.toLowerCase() == email.toLowerCase().trim(),
+      );
     } catch (_) {
       return null;
     }
