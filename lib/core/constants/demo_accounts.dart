@@ -5,6 +5,7 @@ class DemoAccount {
   final String password;
   final UserEntity user;
   final String subtitle;
+  final String subtitleAr;
   final String icon;
 
   const DemoAccount({
@@ -12,8 +13,11 @@ class DemoAccount {
     required this.password,
     required this.user,
     required this.subtitle,
+    required this.subtitleAr,
     required this.icon,
   });
+
+  String localizedSubtitle(bool isAr) => isAr ? subtitleAr : subtitle;
 }
 
 class DemoAccounts {
@@ -25,6 +29,7 @@ class DemoAccounts {
       email: 'owner@compound.demo',
       password: defaultPassword,
       subtitle: 'Villa V-104 • Full Owner Privileges',
+      subtitleAr: 'فيلا V-104 • صلاحيات المالك الكاملة',
       icon: '🏛️',
       user: UserEntity(
         id: 'usr_owner_tarek',
@@ -47,6 +52,7 @@ class DemoAccounts {
       email: 'tenant@compound.demo',
       password: defaultPassword,
       subtitle: 'Apartment B2-301 • Resident Services',
+      subtitleAr: 'شقة B2-301 • خدمات السكان',
       icon: '🏠',
       user: UserEntity(
         id: 'usr_tenant_sara',
@@ -69,6 +75,7 @@ class DemoAccounts {
       email: 'security@compound.demo',
       password: defaultPassword,
       subtitle: 'Main Gate 1 • Visitor Entry & Plate Search',
+      subtitleAr: 'البوابة الرئيسية ١ • دخول الزوار والبحث باللوحات',
       icon: '🛡️',
       user: UserEntity(
         id: 'usr_sec_ahmed',
@@ -90,6 +97,7 @@ class DemoAccounts {
       email: 'maintenance@compound.demo',
       password: defaultPassword,
       subtitle: 'Facility Maintenance • Work Orders & Dispatch',
+      subtitleAr: 'صيانة المرافق • أوامر العمل وتوزيع الفنيين',
       icon: '🔧',
       user: UserEntity(
         id: 'usr_maint_hassan',
@@ -111,6 +119,7 @@ class DemoAccounts {
       email: 'housekeeping@compound.demo',
       password: defaultPassword,
       subtitle: 'Housekeeping & Cleaning Operations',
+      subtitleAr: 'عمليات النظافة المنزلية والخدمات الفندقية',
       icon: '🧹',
       user: UserEntity(
         id: 'usr_hk_maria',
@@ -132,6 +141,7 @@ class DemoAccounts {
       email: 'recreation@compound.demo',
       password: defaultPassword,
       subtitle: 'Clubhouse, Gym & Padel Courts Manager',
+      subtitleAr: 'إدارة النادي الاجتماعي والصالة الرياضية وملاعب البادل',
       icon: '🎾',
       user: UserEntity(
         id: 'usr_rec_karim',
@@ -153,6 +163,7 @@ class DemoAccounts {
       email: 'it@compound.demo',
       password: defaultPassword,
       subtitle: 'Network, Smart Home & Technical Tickets',
+      subtitleAr: 'الشبكات والمنزل الذكي والتذاكر التقنية',
       icon: '💻',
       user: UserEntity(
         id: 'usr_it_omar',
@@ -174,6 +185,7 @@ class DemoAccounts {
       email: 'admin@compound.demo',
       password: defaultPassword,
       subtitle: 'Compound Director & Executive Complaints',
+      subtitleAr: 'إدارة المجمع والشكاوى التنفيذية',
       icon: '👔',
       user: UserEntity(
         id: 'usr_adm_laila',
@@ -195,6 +207,7 @@ class DemoAccounts {
       email: 'superadmin@compound.demo',
       password: defaultPassword,
       subtitle: 'System Settings, Multi-Compound & Seeds',
+      subtitleAr: 'إعدادات النظام وتعدد المجمعات والبيانات التجريبية',
       icon: '⚙️',
       user: UserEntity(
         id: 'usr_sys_super',

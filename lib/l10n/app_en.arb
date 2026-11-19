@@ -1,0 +1,227 @@
+{
+  "@@locale": "en",
+  "appTitle": "Al-Mohamedia Compound",
+  "compoundName": "Al-Mohamedia Compound",
+  "signOut": "Sign Out",
+  "switchLanguage": "Switch Language",
+  "languageToggleLabel": "عربي",
+  "cancel": "Cancel",
+
+  "emailAddress": "Email Address",
+  "emailHint": "name@compound.demo",
+  "emailRequired": "Please enter your email",
+  "password": "Password",
+  "passwordRequired": "Please enter your password",
+  "signInToResidence": "Sign In to Residence",
+  "quickDemoIdentities": "Quick Demo Identities (9 Roles)",
+
+  "instantDemoAccess": "Instant Demo Access",
+  "instantDemoSubtitle": "Select any predefined role below to test its dedicated dashboard immediately.",
+  "residentIdentities": "RESIDENT IDENTITIES",
+  "departmentEmployeeIdentities": "DEPARTMENT & EMPLOYEE IDENTITIES",
+
+  "residentFallbackName": "Resident",
+  "ownerBadge": "OWNER",
+  "tenantBadge": "TENANT",
+  "unitAuthorizedResidence": "Unit {unit} • Authorized Residence",
+  "@unitAuthorizedResidence": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "residentServices": "Resident Services",
+  "visitorPass": "Visitor Pass",
+  "visitorPassSubtitle": "Expected guests & QR",
+  "maintenance": "Maintenance",
+  "maintenanceSubtitle": "AC, plumbing & repairs",
+  "recreation": "Recreation",
+  "recreationSubtitle": "Padel, gym & pool",
+  "housekeeping": "Housekeeping",
+  "housekeepingSubtitle": "Book certified cleaning",
+  "activeRequests": "Active Requests",
+  "newRequest": "New Request",
+  "noActiveRequests": "No active service requests right now.",
+
+  "maintenanceWorkOrders": "Maintenance Work Orders",
+  "maintenanceLeadFallback": "Maintenance Lead",
+  "maintenanceOperationsSubtitle": "Technical Operations • 4 Technicians on Duty",
+  "metricNew": "New",
+  "metricAssigned": "Assigned",
+  "metricInProgress": "In Progress",
+  "metricCompleted": "Completed",
+  "filterAll": "All ({count})",
+  "@filterAll": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "filterAc": "AC ❄️",
+  "filterPlumbing": "Plumbing 🚿",
+  "filterElectrical": "Electrical ⚡",
+  "workOrdersCount": "Work Orders ({count})",
+  "@workOrdersCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noWorkOrdersFilter": "No work orders matching this filter.",
+  "unitLabel": "Unit",
+  "unitWithNumber": "Unit {unit}",
+  "@unitWithNumber": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "unassigned": "Unassigned",
+  "manageAndChat": "Manage & Chat",
+
+  "newMaintenanceRequest": "New Maintenance Request",
+  "selectCategory": "Select Category",
+  "problemTitle": "Problem Title",
+  "problemTitleHint": "e.g. Master Bedroom AC Blowing Warm Air",
+  "problemTitleRequired": "Please enter a title",
+  "detailedDescription": "Detailed Description",
+  "detailedDescriptionHint": "Describe the issue, location in the unit, and any sounds or leakages...",
+  "detailedDescriptionRequired": "Please describe the problem",
+  "urgencyPriority": "Urgency / Priority",
+  "preferredAppointmentSlot": "Preferred Appointment Slot",
+  "tomorrowDate": "Tomorrow ({date})",
+  "@tomorrowDate": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "submitRequestToMaintenance": "Submit Request to Maintenance",
+
+  "assignTechnician": "Assign Technician",
+  "techMahmoud": "Technician Mahmoud (HVAC & AC)",
+  "techSalem": "Technician Salem (Plumbing)",
+  "techHassan": "Eng. Hassan Al-Najjar (Maintenance Lead)",
+  "rateCompletedService": "Rate Completed Service",
+  "rateQuestion": "How satisfied are you with this maintenance repair?",
+  "feedbackHint": "Add feedback or notes (optional)...",
+  "submitRating": "Submit Rating",
+  "updateStatus": "Update Status",
+  "setUnderReview": "Set: Under Review",
+  "setInProgress": "Set: In Progress",
+  "setCompleted": "Set: Completed",
+  "appointmentLabel": "Appointment",
+  "priorityLabel": "Priority",
+  "assignedPrefix": "Assigned: {name}",
+  "@assignedPrefix": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "markComplete": "Mark Complete",
+  "residentFeedback": "Resident Feedback",
+  "serviceCompletedTitle": "Service Completed!",
+  "rateYourExperience": "Rate your experience with our team",
+  "rateButton": "Rate (1-5 ⭐)",
+  "requestUpdatesAndChat": "Request Updates & Chat ({count})",
+  "@requestUpdatesAndChat": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noCommentsYet": "No comments yet. Send a message below to communicate directly.",
+  "typeUpdateOrQuestion": "Type an update or question...",
+  "stepPending": "Pending",
+  "stepReview": "Review",
+  "stepAssigned": "Assigned",
+  "stepInProgress": "In Progress",
+  "stepDone": "Done",
+
+  "securityGateOperations": "Security & Gate Operations",
+  "officerOnDuty": "Officer on Duty",
+  "gateShiftActive": "Gate 1 (Main Entrance) • Shift Active",
+  "expectedToday": "Expected Today",
+  "checkedIn": "Checked In",
+  "onCompound": "On Compound",
+  "searchPlateOrVisitor": "Search Vehicle Plate or Visitor Name...",
+  "expectedVisitors": "Expected Visitors",
+  "hostPrefix": "Host: {unit}",
+  "@hostPrefix": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "statusExpected": "Expected",
+  "checkIn": "Check In",
+  "todaySuffix": "(Today)",
+
+  "housekeepingAndCleaning": "Housekeeping & Cleaning",
+  "housekeepingSupervisorFallback": "Housekeeping Supervisor",
+  "housekeepingRateSubtitle": "Standard Rate: 100 SAR/hr • 6 Cleaning Staff Active",
+  "todaysCleaningAppointments": "Today's Cleaning Appointments",
+  "deepVillaCleaning": "Deep Villa Cleaning",
+  "standardApartmentCleaning": "Standard Apartment Cleaning",
+  "hoursAndSar": "{hours} Hours • {amount} SAR",
+  "@hoursAndSar": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "amount": { "type": "int" }
+    }
+  },
+  "staffUnassigned": "Staff Unassigned",
+  "statusConfirmed": "CONFIRMED",
+  "statusScheduled": "SCHEDULED",
+  "dispatch": "Dispatch",
+
+  "recreationAndFacilities": "Recreation & Facilities",
+  "recreationManagerFallback": "Recreation Manager",
+  "clubhouseSubtitle": "Clubhouse, Gym & 2 Padel Courts Active",
+  "facilityBookingsToday": "Facility Bookings Today",
+  "padelCourt1": "Padel Court 1 (Glass Court)",
+  "olympicSwimmingPool": "Olympic Swimming Pool",
+  "complimentary": "Complimentary",
+  "slotPrefix": "Slot: {time}",
+  "@slotPrefix": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "sarAmount": "{amount} SAR",
+  "@sarAmount": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+
+  "itSmartSupport": "IT & Smart Compound Support",
+  "itSupportFallback": "IT Support Specialist",
+  "fiberNetworkSubtitle": "Fiber Network & Smart Access Systems",
+  "activeTechnicalTickets": "Active Technical Tickets",
+  "smartIntercomOffline": "Smart Intercom Connection Offline",
+  "fiberSpeedDegradation": "Fiber Internet Speed Degradation",
+  "statusInvestigating": "INVESTIGATING",
+  "statusQueued": "QUEUED",
+
+  "compoundAdministration": "Compound Administration",
+  "administratorFallback": "Administrator",
+  "executiveOpsSubtitle": "Executive Operations & Resident Complaints",
+  "totalUnits": "Total Units",
+  "occupancy": "Occupancy",
+  "openRequests": "Open Requests",
+  "escalatedComplaints": "Escalated Complaints & Direct Requests",
+  "visitorGateDelayComplaint": "Visitor Gate Access Delay Complaint",
+  "hoursAgo": "{count} hours ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "highPriorityBadge": "HIGH PRIORITY",
+  "underReviewBadge": "UNDER REVIEW",
+
+  "systemAdministration": "System Administration",
+  "globalSystemOperations": "Global System Operations",
+  "globalSystemSubtitle": "Compounds, Security Rules & Master Seed Management",
+  "administrativeFunctions": "Administrative Functions",
+  "compoundManagement": "Compound Management",
+  "compoundManagementSubtitle": "Manage Al-Mohamedia Compound & add new compounds",
+  "userRolesPermissions": "User Roles & Permissions",
+  "userRolesPermissionsSubtitle": "Manage RBAC across residents & staff",
+  "seedDemoDatabase": "Seed Demo Database",
+  "seedDemoDatabaseSubtitle": "Reset or re-seed sample requests and bookings"
+}

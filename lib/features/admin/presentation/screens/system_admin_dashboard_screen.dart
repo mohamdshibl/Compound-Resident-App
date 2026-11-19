@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -9,20 +11,23 @@ class SystemAdminDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('System Administration'),
+            title: Text(l10n.systemAdministration),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: AppColors.accentGold,
                 ),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -38,29 +43,29 @@ class SystemAdminDashboardScreen extends StatelessWidget {
                     color: AppColors.primaryDark,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.settings_suggest_rounded,
                         color: AppColors.accentGold,
                         size: 36,
                       ),
-                      SizedBox(width: 14),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Global System Operations',
-                              style: TextStyle(
+                              l10n.globalSystemOperations,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textWhite,
                               ),
                             ),
                             Text(
-                              'Compounds, Security Rules & Master Seed Management',
-                              style: TextStyle(
+                              l10n.globalSystemSubtitle,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.accentGoldLight,
                               ),
@@ -72,9 +77,9 @@ class SystemAdminDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Administrative Functions',
-                  style: TextStyle(
+                Text(
+                  l10n.administrativeFunctions,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -83,22 +88,22 @@ class SystemAdminDashboardScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildAdminActionTile(
                   icon: Icons.domain_rounded,
-                  title: 'Compound Management',
-                  subtitle: 'Manage Al-Mohamedia Compound & add new compounds',
+                  title: l10n.compoundManagement,
+                  subtitle: l10n.compoundManagementSubtitle,
                   onTap: () {},
                 ),
                 const SizedBox(height: 10),
                 _buildAdminActionTile(
                   icon: Icons.people_alt_rounded,
-                  title: 'User Roles & Permissions',
-                  subtitle: 'Manage RBAC across residents & staff',
+                  title: l10n.userRolesPermissions,
+                  subtitle: l10n.userRolesPermissionsSubtitle,
                   onTap: () {},
                 ),
                 const SizedBox(height: 10),
                 _buildAdminActionTile(
                   icon: Icons.cloud_sync_rounded,
-                  title: 'Seed Demo Database',
-                  subtitle: 'Reset or re-seed sample requests and bookings',
+                  title: l10n.seedDemoDatabase,
+                  subtitle: l10n.seedDemoDatabaseSubtitle,
                   onTap: () {},
                 ),
               ],

@@ -197,12 +197,15 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
     // Attempt Firestore fetch
     try {
       Query query = _firestore.collection('service_requests');
-      if (compoundId != null)
+      if (compoundId != null) {
         query = query.where('compoundId', isEqualTo: compoundId);
-      if (userId != null)
+      }
+      if (userId != null) {
         query = query.where('createdByUserId', isEqualTo: userId);
-      if (department != null)
+      }
+      if (department != null) {
         query = query.where('department', isEqualTo: department);
+      }
 
       final snapshot = await query.get();
       if (snapshot.docs.isNotEmpty) {

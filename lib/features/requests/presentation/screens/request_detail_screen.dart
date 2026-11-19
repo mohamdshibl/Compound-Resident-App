@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/entities/request_enums.dart';
@@ -42,8 +44,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     context.read<MaintenanceCubit>().addComment(
           requestId: req.id,
           senderId: auth.user.id,
-          senderName: auth.user.fullName,
-          senderRole: auth.user.role.toDbString(),
+          senderName: auth.user.localizedName(context),
+          senderRole: auth.user.role.localizedName(context),
           message: text,
         );
 
@@ -51,15 +53,16 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   }
 
   void _openAssignSheet(ServiceRequestEntity req) {
+    final l10n = context.l10n;
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (ctx) {
         final techs = [
-          {'id': 'usr_tech_mahmoud', 'name': 'Technician Mahmoud (HVAC & AC)'},
-          {'id': 'usr_tech_salem', 'name': 'Technician Salem (Plumbing)'},
-          {'id': 'usr_maint_hassan', 'name': 'Eng. Hassan Al-Najjar (Maintenance Lead)'},
+          {'id': 'usr_tech_mahmoud', 'name': l10n.techMahmoud},
+          {'id': 'usr_tech_salem', 'name': l10n.techSalem},
+          {'id': 'usr_maint_hassan', 'name': l10n.techHassan},
         ];
 
         return Padding(
@@ -68,7 +71,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Assign Technician', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(l10n.assignTechnician, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 14),
               ...techs.map(
                 (t) => ListTile(
@@ -96,6 +99,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   }
 
   void _openRatingDialog(ServiceRequestEntity req) {
+    final l10n = context.l10n;
     int rating = 5;
     final feedbackController = TextEditingController();
 
@@ -105,11 +109,11 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
         builder: (ctx, setDialogState) => AlertDialog(
           backgroundColor: AppColors.surface,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Rate Completed Service', style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(l10n.rateCompletedService, style: const TextStyle(fontWeight: FontWeight.bold)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('How satisfied are you with this maintenance repair?', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+              Text(l10n.rateQuestion, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -129,8 +133,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               TextField(
                 controller: feedbackController,
                 maxLines: 2,
-                decoration: const InputDecoration(
-                  hintText: 'Add feedback or notes (optional)...',
+                decoration: InputDecoration(
+                  hintText: l10n.feedbackHint,
                 ),
               ),
             ],
@@ -138,7 +142,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+              child: Text(l10n.cancel, style: const TextStyle(color: AppColors.textSecondary)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -149,7 +153,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       feedback: feedbackController.text.trim(),
                     );
               },
-              child: const Text('Submit Rating'),
+              child: Text(l10n.submitRating),
             ),
           ],
         ),
@@ -159,6 +163,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocConsumer<MaintenanceCubit, MaintenanceState>(
       listener: (context, state) {
         if (state is MaintenanceLoaded && state.successMessage != null) {
@@ -186,25 +192,26 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             backgroundColor: AppColors.primaryDark,
             title: Text(req.requestNumber),
             actions: [
+              const LanguageToggleButton(),
               if (isEmployee)
                 PopupMenuButton<RequestStatus>(
                   icon: const Icon(Icons.more_vert_rounded, color: AppColors.accentGold),
-                  tooltip: 'Update Status',
+                  tooltip: l10n.updateStatus,
                   onSelected: (newStatus) {
                     context.read<MaintenanceCubit>().updateStatus(req.id, newStatus);
                   },
                   itemBuilder: (ctx) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: RequestStatus.underReview,
-                      child: Text('Set: Under Review'),
+                      child: Text(l10n.setUnderReview),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: RequestStatus.inProgress,
-                      child: Text('Set: In Progress'),
+                      child: Text(l10n.setInProgress),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: RequestStatus.completed,
-                      child: Text('Set: Completed'),
+                      child: Text(l10n.setCompleted),
                     ),
                   ],
                 ),
@@ -237,12 +244,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                     Text(req.category.iconEmoji, style: const TextStyle(fontSize: 20)),
                                     const SizedBox(width: 8),
                                     Text(
-                                      req.category.displayNameEn,
+                                      req.category.localizedName(context),
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                     ),
                                   ],
                                 ),
-                                _buildStatusBadge(req.currentStatus),
+                                _buildStatusBadge(context, req.currentStatus),
                               ],
                             ),
                             const SizedBox(height: 12),
@@ -261,9 +268,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                _buildInfoItem(Icons.home_outlined, 'Unit', req.unitNumber),
-                                _buildInfoItem(Icons.calendar_today_outlined, 'Appointment', req.preferredTimeSlot),
-                                _buildInfoItem(Icons.warning_amber_rounded, 'Priority', req.priority.displayNameEn),
+                                _buildInfoItem(Icons.home_outlined, l10n.unitLabel, req.unitNumber),
+                                _buildInfoItem(Icons.calendar_today_outlined, l10n.appointmentLabel, req.preferredTimeSlot),
+                                _buildInfoItem(Icons.warning_amber_rounded, l10n.priorityLabel, req.priority.localizedName(context)),
                               ],
                             ),
                             if (req.assignedEmployeeName != null) ...[
@@ -278,9 +285,11 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                   children: [
                                     const Icon(Icons.engineering_rounded, color: AppColors.statusAssigned, size: 20),
                                     const SizedBox(width: 8),
-                                    Text(
-                                      'Assigned: ${req.assignedEmployeeName}',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.statusAssigned),
+                                    Expanded(
+                                      child: Text(
+                                        l10n.assignedPrefix(req.assignedEmployeeName!),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.statusAssigned),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -292,7 +301,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       const SizedBox(height: 16),
 
                       // Status Progression Stepper
-                      _buildStatusTimeline(req.currentStatus),
+                      _buildStatusTimeline(context, req.currentStatus),
                       const SizedBox(height: 16),
 
                       // Employee Action: Assign Technician
@@ -303,7 +312,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               child: ElevatedButton.icon(
                                 onPressed: () => _openAssignSheet(req),
                                 icon: const Icon(Icons.person_add_rounded, size: 18),
-                                label: const Text('Assign Technician'),
+                                label: Text(l10n.assignTechnician),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
                                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -316,7 +325,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                 child: ElevatedButton.icon(
                                   onPressed: () => context.read<MaintenanceCubit>().updateStatus(req.id, RequestStatus.completed),
                                   icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-                                  label: const Text('Mark Complete'),
+                                  label: Text(l10n.markComplete),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.statusCompleted,
                                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -352,9 +361,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 8),
-                                        const Text(
-                                          'Resident Feedback',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                        Text(
+                                          l10n.residentFeedback,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                         ),
                                       ],
                                     ),
@@ -370,13 +379,16 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Service Completed!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                                        Text('Rate your experience with our team', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                                      ],
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(l10n.serviceCompletedTitle, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                          Text(l10n.rateYourExperience, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                                        ],
+                                      ),
                                     ),
+                                    const SizedBox(width: 8),
                                     ElevatedButton(
                                       onPressed: () => _openRatingDialog(req),
                                       style: ElevatedButton.styleFrom(
@@ -384,7 +396,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                         foregroundColor: AppColors.primaryDark,
                                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                       ),
-                                      child: const Text('Rate (1-5 ⭐)'),
+                                      child: Text(l10n.rateButton),
                                     ),
                                   ],
                                 ),
@@ -398,7 +410,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           const Icon(Icons.forum_outlined, size: 18, color: AppColors.primary),
                           const SizedBox(width: 6),
                           Text(
-                            'Request Updates & Chat (${comments.length})',
+                            l10n.requestUpdatesAndChat(comments.length),
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -407,12 +419,13 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
                       // Comments Thread
                       if (comments.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           child: Center(
                             child: Text(
-                              'No comments yet. Send a message below to communicate directly.',
-                              style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                              l10n.noCommentsYet,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                             ),
                           ),
                         )
@@ -444,7 +457,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                         child: TextField(
                           controller: _commentController,
                           decoration: InputDecoration(
-                            hintText: 'Type an update or question...',
+                            hintText: l10n.typeUpdateOrQuestion,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(24),
@@ -472,7 +485,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
-  Widget _buildStatusBadge(RequestStatus status) {
+  Widget _buildStatusBadge(BuildContext context, RequestStatus status) {
     Color bg;
     Color fg;
     switch (status) {
@@ -502,7 +515,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        status.displayNameEn.toUpperCase(),
+        status.localizedName(context).toUpperCase(),
         style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: fg),
       ),
     );
@@ -520,8 +533,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
-  Widget _buildStatusTimeline(RequestStatus current) {
-    final steps = ['Pending', 'Review', 'Assigned', 'In Progress', 'Done'];
+  Widget _buildStatusTimeline(BuildContext context, RequestStatus current) {
+    final l10n = context.l10n;
+    final steps = [
+      l10n.stepPending,
+      l10n.stepReview,
+      l10n.stepAssigned,
+      l10n.stepInProgress,
+      l10n.stepDone,
+    ];
     final currentIdx = current.stepIndex;
 
     return Container(
@@ -578,7 +598,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
   Widget _buildCommentBubble(dynamic c, bool isMe) {
     return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: isMe ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

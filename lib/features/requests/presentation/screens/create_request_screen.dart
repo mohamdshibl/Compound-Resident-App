@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../domain/entities/request_enums.dart';
@@ -57,7 +59,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       unitId: user.authorizedUnitIds.isNotEmpty ? user.authorizedUnitIds.first : 'unit_v104',
       unitNumber: user.primaryUnitNumber ?? 'V-104',
       createdByUserId: user.id,
-      createdByName: user.fullName,
+      createdByName: user.localizedName(context),
       createdByRole: user.role.toDbString(),
       category: _selectedCategory,
       title: _titleController.text.trim(),
@@ -75,6 +77,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final formattedDate = '${_preferredDate.day}/${_preferredDate.month}/${_preferredDate.year}';
+
     return BlocListener<MaintenanceCubit, MaintenanceState>(
       listener: (context, state) {
         if (state is MaintenanceLoaded && state.successMessage != null) {
@@ -92,7 +97,10 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.primaryDark,
-          title: const Text('New Maintenance Request'),
+          title: Text(l10n.newMaintenanceRequest),
+          actions: const [
+            LanguageToggleButton(),
+          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -102,9 +110,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Category Selector
-                const Text(
-                  'Select Category',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.selectCategory,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 10),
                 Wrap(
@@ -131,7 +139,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                             Text(cat.iconEmoji, style: const TextStyle(fontSize: 16)),
                             const SizedBox(width: 6),
                             Text(
-                              cat.displayNameEn,
+                              cat.localizedName(context),
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -147,40 +155,40 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 const SizedBox(height: 22),
 
                 // Request Title
-                const Text(
-                  'Problem Title',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.problemTitle,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _titleController,
-                  decoration: const InputDecoration(
-                    hintText: 'e.g. Master Bedroom AC Blowing Warm Air',
+                  decoration: InputDecoration(
+                    hintText: l10n.problemTitleHint,
                   ),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter a title' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? l10n.problemTitleRequired : null,
                 ),
                 const SizedBox(height: 18),
 
                 // Problem Description
-                const Text(
-                  'Detailed Description',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.detailedDescription,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 4,
-                  decoration: const InputDecoration(
-                    hintText: 'Describe the issue, location in the unit, and any sounds or leakages...',
+                  decoration: InputDecoration(
+                    hintText: l10n.detailedDescriptionHint,
                   ),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Please describe the problem' : null,
+                  validator: (v) => (v == null || v.trim().isEmpty) ? l10n.detailedDescriptionRequired : null,
                 ),
                 const SizedBox(height: 20),
 
                 // Priority Selection
-                const Text(
-                  'Urgency / Priority',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.urgencyPriority,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -202,7 +210,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                               ),
                             ),
                             child: Text(
-                              p.displayNameEn,
+                              p.localizedName(context),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 11,
@@ -219,9 +227,9 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 const SizedBox(height: 22),
 
                 // Preferred Date & Time
-                const Text(
-                  'Preferred Appointment Slot',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.preferredAppointmentSlot,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -235,9 +243,12 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                     children: [
                       const Icon(Icons.calendar_today_rounded, size: 18, color: AppColors.accentTeal),
                       const SizedBox(width: 10),
-                      Text(
-                        'Tomorrow (${_preferredDate.day}/${_preferredDate.month}/${_preferredDate.year})',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      Flexible(
+                        child: Text(
+                          l10n.tomorrowDate(formattedDate),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
                       ),
                       const Spacer(),
                       DropdownButton<String>(
@@ -272,7 +283,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textWhite),
                             )
-                          : const Text('Submit Request to Maintenance'),
+                          : Text(l10n.submitRequestToMaintenance),
                     );
                   },
                 ),

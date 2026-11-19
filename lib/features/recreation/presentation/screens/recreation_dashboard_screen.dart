@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -9,6 +11,9 @@ class RecreationDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isAr = context.isArabic;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final user = (state is Authenticated) ? state.user : null;
@@ -17,11 +22,12 @@ class RecreationDashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('Recreation & Facilities'),
+            title: Text(l10n.recreationAndFacilities),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -53,16 +59,16 @@ class RecreationDashboardScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user?.fullName ?? 'Recreation Manager',
+                              user?.localizedName(context) ?? l10n.recreationManagerFallback,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textWhite,
                               ),
                             ),
-                            const Text(
-                              'Clubhouse, Gym & 2 Padel Courts Active',
-                              style: TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
+                            Text(
+                              l10n.clubhouseSubtitle,
+                              style: const TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
                             ),
                           ],
                         ),
@@ -71,25 +77,27 @@ class RecreationDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Facility Bookings Today',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.facilityBookingsToday,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 12),
                 _buildFacilityBookingCard(
-                  facility: 'Padel Court 1 (Glass Court)',
-                  resident: 'Dr. Tarek Mansour (Villa V-104)',
+                  context: context,
+                  facility: l10n.padelCourt1,
+                  resident: isAr ? 'د. طارق منصور (فيلا V-104)' : 'Dr. Tarek Mansour (Villa V-104)',
                   time: '19:00 - 20:00',
-                  rate: '80 SAR',
-                  status: 'CONFIRMED',
+                  rate: l10n.sarAmount(80),
+                  status: l10n.statusConfirmed,
                 ),
                 const SizedBox(height: 12),
                 _buildFacilityBookingCard(
-                  facility: 'Olympic Swimming Pool',
-                  resident: 'Sara Al-Husseini (Apt B2-301)',
+                  context: context,
+                  facility: l10n.olympicSwimmingPool,
+                  resident: isAr ? 'سارة الحسيني (شقة B2-301)' : 'Sara Al-Husseini (Apt B2-301)',
                   time: '16:00 - 17:00',
-                  rate: 'Complimentary',
-                  status: 'CONFIRMED',
+                  rate: l10n.complimentary,
+                  status: l10n.statusConfirmed,
                 ),
               ],
             ),
@@ -100,12 +108,15 @@ class RecreationDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildFacilityBookingCard({
+    required BuildContext context,
     required String facility,
     required String resident,
     required String time,
     required String rate,
     required String status,
   }) {
+    final l10n = context.l10n;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -119,7 +130,10 @@ class RecreationDashboardScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(facility, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(facility, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
@@ -139,7 +153,7 @@ class RecreationDashboardScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Slot: $time', style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+              Text(l10n.slotPrefix(time), style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
               Text(rate, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.accentGoldDark)),
             ],
           ),

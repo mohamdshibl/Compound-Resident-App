@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -9,6 +11,9 @@ class ItDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isAr = context.isArabic;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final user = (state is Authenticated) ? state.user : null;
@@ -17,11 +22,12 @@ class ItDashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('IT & Smart Compound Support'),
+            title: Text(l10n.itSmartSupport),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -53,16 +59,16 @@ class ItDashboardScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user?.fullName ?? 'IT Support Specialist',
+                              user?.localizedName(context) ?? l10n.itSupportFallback,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textWhite,
                               ),
                             ),
-                            const Text(
-                              'Fiber Network & Smart Access Systems',
-                              style: TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
+                            Text(
+                              l10n.fiberNetworkSubtitle,
+                              style: const TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
                             ),
                           ],
                         ),
@@ -71,25 +77,23 @@ class ItDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Active Technical Tickets',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.activeTechnicalTickets,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 12),
                 _buildTicketCard(
                   ticketId: 'IT-2026-088',
-                  title: 'Smart Intercom Connection Offline',
-                  unit: 'Villa V-104 (Dr. Tarek)',
-                  priority: 'HIGH',
-                  status: 'INVESTIGATING',
+                  title: l10n.smartIntercomOffline,
+                  unit: isAr ? 'فيلا V-104 (د. طارق)' : 'Villa V-104 (Dr. Tarek)',
+                  status: l10n.statusInvestigating,
                 ),
                 const SizedBox(height: 12),
                 _buildTicketCard(
                   ticketId: 'IT-2026-091',
-                  title: 'Fiber Internet Speed Degradation',
-                  unit: 'Apt B2-301 (Sara)',
-                  priority: 'NORMAL',
-                  status: 'QUEUED',
+                  title: l10n.fiberSpeedDegradation,
+                  unit: isAr ? 'شقة B2-301 (سارة)' : 'Apt B2-301 (Sara)',
+                  status: l10n.statusQueued,
                 ),
               ],
             ),
@@ -103,7 +107,6 @@ class ItDashboardScreen extends StatelessWidget {
     required String ticketId,
     required String title,
     required String unit,
-    required String priority,
     required String status,
   }) {
     return Container(

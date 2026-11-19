@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -9,6 +11,9 @@ class AdminDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isAr = context.isArabic;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final user = (state is Authenticated) ? state.user : null;
@@ -17,11 +22,12 @@ class AdminDashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('Compound Administration'),
+            title: Text(l10n.compoundAdministration),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -53,16 +59,16 @@ class AdminDashboardScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user?.fullName ?? 'Administrator',
+                              user?.localizedName(context) ?? l10n.administratorFallback,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textWhite,
                               ),
                             ),
-                            const Text(
-                              'Executive Operations & Resident Complaints',
-                              style: TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
+                            Text(
+                              l10n.executiveOpsSubtitle,
+                              style: const TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
                             ),
                           ],
                         ),
@@ -75,26 +81,26 @@ class AdminDashboardScreen extends StatelessWidget {
                 // Metrics
                 Row(
                   children: [
-                    _buildMetricCard('Total Units', '180', AppColors.primary),
+                    _buildMetricCard(l10n.totalUnits, '180', AppColors.primary),
                     const SizedBox(width: 10),
-                    _buildMetricCard('Occupancy', '92%', AppColors.statusCompleted),
+                    _buildMetricCard(l10n.occupancy, '92%', AppColors.statusCompleted),
                     const SizedBox(width: 10),
-                    _buildMetricCard('Open Requests', '14', AppColors.statusPending),
+                    _buildMetricCard(l10n.openRequests, '14', AppColors.statusPending),
                   ],
                 ),
                 const SizedBox(height: 24),
 
-                const Text(
-                  'Escalated Complaints & Direct Requests',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                Text(
+                  l10n.escalatedComplaints,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 12),
                 _buildComplaintCard(
-                  title: 'Visitor Gate Access Delay Complaint',
-                  resident: 'Dr. Tarek Mansour (Villa V-104)',
-                  time: '2 hours ago',
-                  priority: 'HIGH PRIORITY',
-                  status: 'UNDER REVIEW',
+                  title: l10n.visitorGateDelayComplaint,
+                  resident: isAr ? 'د. طارق منصور (فيلا V-104)' : 'Dr. Tarek Mansour (Villa V-104)',
+                  time: l10n.hoursAgo(2),
+                  priority: l10n.highPriorityBadge,
+                  status: l10n.underReviewBadge,
                 ),
               ],
             ),

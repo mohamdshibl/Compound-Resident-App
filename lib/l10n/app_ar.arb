@@ -1,0 +1,227 @@
+{
+  "@@locale": "ar",
+  "appTitle": "مجمع المحمدية",
+  "compoundName": "مجمع المحمدية",
+  "signOut": "تسجيل الخروج",
+  "switchLanguage": "تغيير اللغة",
+  "languageToggleLabel": "EN",
+  "cancel": "إلغاء",
+
+  "emailAddress": "البريد الإلكتروني",
+  "emailHint": "name@compound.demo",
+  "emailRequired": "يرجى إدخال البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "passwordRequired": "يرجى إدخال كلمة المرور",
+  "signInToResidence": "تسجيل الدخول للمجمع",
+  "quickDemoIdentities": "حسابات التجربة السريعة (٩ أدوار)",
+
+  "instantDemoAccess": "دخول تجريبي فوري",
+  "instantDemoSubtitle": "اختر أي دور أدناه لتجربة لوحة التحكم الخاصة به فوراً.",
+  "residentIdentities": "حسابات السكان والملاك",
+  "departmentEmployeeIdentities": "حسابات الأقسام والموظفين",
+
+  "residentFallbackName": "ساكن",
+  "ownerBadge": "مالك",
+  "tenantBadge": "مستأجر",
+  "unitAuthorizedResidence": "وحدة {unit} • سكن معتمد",
+  "@unitAuthorizedResidence": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "residentServices": "خدمات السكان",
+  "visitorPass": "تصريح زائر",
+  "visitorPassSubtitle": "الضيوف المتوقعون ورمز QR",
+  "maintenance": "الصيانة",
+  "maintenanceSubtitle": "تكييف، سباكة وإصلاحات",
+  "recreation": "المرافق والترفيه",
+  "recreationSubtitle": "بادل، نادي رياضي ومسبح",
+  "housekeeping": "النظافة المنزلية",
+  "housekeepingSubtitle": "حجز خدمة تنظيف معتمدة",
+  "activeRequests": "الطلبات النشطة",
+  "newRequest": "طلب جديد",
+  "noActiveRequests": "لا توجد طلبات خدمة نشطة حالياً.",
+
+  "maintenanceWorkOrders": "أوامر عمل الصيانة",
+  "maintenanceLeadFallback": "مسؤول الصيانة",
+  "maintenanceOperationsSubtitle": "العمليات الفنية • ٤ فنيين على رأس العمل",
+  "metricNew": "جديد",
+  "metricAssigned": "مسند",
+  "metricInProgress": "قيد التنفيذ",
+  "metricCompleted": "مكتمل",
+  "filterAll": "الكل ({count})",
+  "@filterAll": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "filterAc": "تكييف ❄️",
+  "filterPlumbing": "سباكة 🚿",
+  "filterElectrical": "كهرباء ⚡",
+  "workOrdersCount": "أوامر العمل ({count})",
+  "@workOrdersCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noWorkOrdersFilter": "لا توجد أوامر عمل تطابق هذا التصنيف.",
+  "unitLabel": "الوحدة",
+  "unitWithNumber": "وحدة {unit}",
+  "@unitWithNumber": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "unassigned": "غير مسند",
+  "manageAndChat": "إدارة ومحادثة",
+
+  "newMaintenanceRequest": "طلب صيانة جديد",
+  "selectCategory": "اختر التصنيف",
+  "problemTitle": "عنوان المشكلة",
+  "problemTitleHint": "مثال: مكيف غرفة النوم الرئيسية لا يبرد",
+  "problemTitleRequired": "يرجى إدخال عنوان المشكلة",
+  "detailedDescription": "وصف تفصيلي",
+  "detailedDescriptionHint": "اشرح المشكلة، موقعها داخل الوحدة، وأي أصوات أو تسريبات...",
+  "detailedDescriptionRequired": "يرجى وصف المشكلة",
+  "urgencyPriority": "درجة الأهمية / الأولوية",
+  "preferredAppointmentSlot": "الموعد المفضل للزيارة",
+  "tomorrowDate": "غداً ({date})",
+  "@tomorrowDate": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "submitRequestToMaintenance": "إرسال الطلب لقسم الصيانة",
+
+  "assignTechnician": "إسناد فني",
+  "techMahmoud": "الفني محمود (تكييف وتبريد)",
+  "techSalem": "الفني سالم (سباكة)",
+  "techHassan": "م. حسن النجار (مسؤول الصيانة)",
+  "rateCompletedService": "تقييم الخدمة المكتملة",
+  "rateQuestion": "ما مدى رضاك عن خدمة الصيانة المقدمة؟",
+  "feedbackHint": "أضف ملاحظاتك أو تعليقك (اختياري)...",
+  "submitRating": "إرسال التقييم",
+  "updateStatus": "تحديث الحالة",
+  "setUnderReview": "تعيين: قيد المراجعة",
+  "setInProgress": "تعيين: جاري العمل",
+  "setCompleted": "تعيين: مكتمل",
+  "appointmentLabel": "الموعد",
+  "priorityLabel": "الأولوية",
+  "assignedPrefix": "الفني المسند: {name}",
+  "@assignedPrefix": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "markComplete": "إنهاء الطلب",
+  "residentFeedback": "تقييم الساكن",
+  "serviceCompletedTitle": "تم إكمال الخدمة!",
+  "rateYourExperience": "قيّم تجربتك مع فريق الصيانة",
+  "rateButton": "تقييم (١-٥ ⭐)",
+  "requestUpdatesAndChat": "التحديثات والمحادثة ({count})",
+  "@requestUpdatesAndChat": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noCommentsYet": "لا توجد تعليقات بعد. أرسل رسالة أدناه للتواصل المباشر.",
+  "typeUpdateOrQuestion": "اكتب تحديثاً أو استفساراً...",
+  "stepPending": "انتظار",
+  "stepReview": "مراجعة",
+  "stepAssigned": "مسند",
+  "stepInProgress": "تنفيذ",
+  "stepDone": "مكتمل",
+
+  "securityGateOperations": "الأمن وعمليات البوابات",
+  "officerOnDuty": "ضابط الأمن المناوب",
+  "gateShiftActive": "البوابة ١ (المدخل الرئيسي) • المناوبة نشطة",
+  "expectedToday": "متوقعون اليوم",
+  "checkedIn": "تم الدخول",
+  "onCompound": "داخل المجمع",
+  "searchPlateOrVisitor": "ابحث برقم اللوحة أو اسم الزائر...",
+  "expectedVisitors": "الزوار المتوقعون",
+  "hostPrefix": "المستضيف: {unit}",
+  "@hostPrefix": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "statusExpected": "متوقع",
+  "checkIn": "تسجيل دخول",
+  "todaySuffix": "(اليوم)",
+
+  "housekeepingAndCleaning": "النظافة المنزلية",
+  "housekeepingSupervisorFallback": "مشرفة النظافة",
+  "housekeepingRateSubtitle": "السعر القياسي: ١٠٠ ر.س/ساعة • ٦ عاملات نشطات",
+  "todaysCleaningAppointments": "مواعيد التنظيف اليوم",
+  "deepVillaCleaning": "تنظيف عميق للفيلا",
+  "standardApartmentCleaning": "تنظيف قياسي للشقة",
+  "hoursAndSar": "{hours} ساعات • {amount} ر.س",
+  "@hoursAndSar": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "amount": { "type": "int" }
+    }
+  },
+  "staffUnassigned": "لم يتم تعيين طاقم",
+  "statusConfirmed": "مؤكد",
+  "statusScheduled": "مجدول",
+  "dispatch": "توجيه الطاقم",
+
+  "recreationAndFacilities": "المرافق والترفيه",
+  "recreationManagerFallback": "مدير المرافق",
+  "clubhouseSubtitle": "النادي الاجتماعي، الصالة الرياضية وملعبا بادل",
+  "facilityBookingsToday": "حجوزات المرافق اليوم",
+  "padelCourt1": "ملعب البادل ١ (ملعب زجاجي)",
+  "olympicSwimmingPool": "المسبح الأولمبي",
+  "complimentary": "مجاني للمقيمين",
+  "slotPrefix": "الفترة: {time}",
+  "@slotPrefix": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "sarAmount": "{amount} ر.س",
+  "@sarAmount": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+
+  "itSmartSupport": "الدعم الفني والأنظمة الذكية",
+  "itSupportFallback": "أخصائي الدعم الفني",
+  "fiberNetworkSubtitle": "شبكة الألياف الضوئية وأنظمة الدخول الذكي",
+  "activeTechnicalTickets": "التذاكر التقنية النشطة",
+  "smartIntercomOffline": "انقطاع اتصال الإنتركوم الذكي",
+  "fiberSpeedDegradation": "بطء في سرعة إنترنت الألياف",
+  "statusInvestigating": "قيد الفحص",
+  "statusQueued": "في الانتظار",
+
+  "compoundAdministration": "إدارة المجمع",
+  "administratorFallback": "مدير المجمع",
+  "executiveOpsSubtitle": "العمليات التنفيذية وشكاوى السكان",
+  "totalUnits": "إجمالي الوحدات",
+  "occupancy": "نسبة الإشغال",
+  "openRequests": "طلبات مفتوحة",
+  "escalatedComplaints": "الشكاوى المصعّدة والطلبات المباشرة",
+  "visitorGateDelayComplaint": "شكوى تأخر دخول الزوار عند البوابة",
+  "hoursAgo": "منذ {count} ساعات",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "highPriorityBadge": "أولوية عالية",
+  "underReviewBadge": "قيد المراجعة",
+
+  "systemAdministration": "إدارة النظام",
+  "globalSystemOperations": "العمليات الشاملة للنظام",
+  "globalSystemSubtitle": "المجمعات، قواعد الحماية وإدارة البيانات التجريبية",
+  "administrativeFunctions": "الوظائف الإدارية",
+  "compoundManagement": "إدارة المجمعات",
+  "compoundManagementSubtitle": "إدارة مجمع المحمدية وإضافة مجمعات جديدة",
+  "userRolesPermissions": "الأدوار والصلاحيات",
+  "userRolesPermissionsSubtitle": "إدارة صلاحيات السكان والموظفين",
+  "seedDemoDatabase": "إعادة تهيئة البيانات التجريبية",
+  "seedDemoDatabaseSubtitle": "إعادة تعيين أو إنشاء الطلبات والحجوزات التجريبية"
+}

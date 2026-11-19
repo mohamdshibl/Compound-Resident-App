@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import '../l10n/locale_cubit.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
@@ -53,6 +54,8 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => SubmitRatingUseCase(sl()));
 
   // Cubits / Blocs
+  sl.registerFactory(() => LocaleCubit());
+
   sl.registerFactory(
     () => AuthCubit(
       loginUseCase: sl(),

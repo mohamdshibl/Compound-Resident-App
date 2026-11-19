@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/demo_accounts.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/user_entity.dart';
 
@@ -10,6 +11,7 @@ class DemoAccountSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final residents = DemoAccounts.list.where((a) => a.user.isResident).toList();
     final employees = DemoAccounts.list.where((a) => a.user.isEmployee).toList();
 
@@ -34,13 +36,13 @@ class DemoAccountSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          const Row(
+          Row(
             children: [
-              Icon(Icons.stars_rounded, color: AppColors.accentGold, size: 24),
-              SizedBox(width: 8),
+              const Icon(Icons.stars_rounded, color: AppColors.accentGold, size: 24),
+              const SizedBox(width: 8),
               Text(
-                'Instant Demo Access',
-                style: TextStyle(
+                l10n.instantDemoAccess,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -49,18 +51,18 @@ class DemoAccountSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Select any predefined role below to test its dedicated dashboard immediately.',
-            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+          Text(
+            l10n.instantDemoSubtitle,
+            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
           Flexible(
             child: ListView(
               shrinkWrap: true,
               children: [
-                const Text(
-                  'RESIDENT IDENTITIES',
-                  style: TextStyle(
+                Text(
+                  l10n.residentIdentities,
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -70,9 +72,9 @@ class DemoAccountSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 ...residents.map((acc) => _buildAccountItem(context, acc)),
                 const SizedBox(height: 16),
-                const Text(
-                  'DEPARTMENT & EMPLOYEE IDENTITIES',
-                  style: TextStyle(
+                Text(
+                  l10n.departmentEmployeeIdentities,
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
@@ -90,6 +92,8 @@ class DemoAccountSheet extends StatelessWidget {
   }
 
   Widget _buildAccountItem(BuildContext context, DemoAccount acc) {
+    final isAr = context.isArabic;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -114,7 +118,7 @@ class DemoAccountSheet extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                acc.user.fullName,
+                acc.user.localizedName(context),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
             ),
@@ -127,7 +131,7 @@ class DemoAccountSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                acc.user.role.displayNameEn.toUpperCase(),
+                acc.user.role.localizedName(context).toUpperCase(),
                 style: TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
@@ -138,7 +142,7 @@ class DemoAccountSheet extends StatelessWidget {
           ],
         ),
         subtitle: Text(
-          acc.subtitle,
+          acc.localizedSubtitle(isAr),
           style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
         trailing: const Icon(Icons.arrow_forward_rounded, size: 18, color: AppColors.accentGold),

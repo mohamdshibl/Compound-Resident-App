@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
@@ -9,6 +11,9 @@ class SecurityDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isAr = context.isArabic;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final user = (state is Authenticated) ? state.user : null;
@@ -17,11 +22,12 @@ class SecurityDashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('Security & Gate Operations'),
+            title: Text(l10n.securityGateOperations),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -54,16 +60,16 @@ class SecurityDashboardScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user?.fullName ?? 'Officer on Duty',
+                              user?.localizedName(context) ?? l10n.officerOnDuty,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textWhite,
                               ),
                             ),
-                            const Text(
-                              'Gate 1 (Main Entrance) • Shift Active',
-                              style: TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
+                            Text(
+                              l10n.gateShiftActive,
+                              style: const TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
                             ),
                           ],
                         ),
@@ -76,11 +82,11 @@ class SecurityDashboardScreen extends StatelessWidget {
                 // Metrics row
                 Row(
                   children: [
-                    _buildMetricCard('Expected Today', '14', AppColors.statusPending),
+                    _buildMetricCard(l10n.expectedToday, '14', AppColors.statusPending),
                     const SizedBox(width: 10),
-                    _buildMetricCard('Checked In', '9', AppColors.statusCompleted),
+                    _buildMetricCard(l10n.checkedIn, '9', AppColors.statusCompleted),
                     const SizedBox(width: 10),
-                    _buildMetricCard('On Compound', '5', AppColors.statusAssigned),
+                    _buildMetricCard(l10n.onCompound, '5', AppColors.statusAssigned),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -88,7 +94,7 @@ class SecurityDashboardScreen extends StatelessWidget {
                 // Vehicle Plate Search
                 TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search Vehicle Plate or Visitor Name...',
+                    hintText: l10n.searchPlateOrVisitor,
                     prefixIcon: const Icon(Icons.search_rounded, color: AppColors.accentTeal),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.qr_code_scanner_rounded, color: AppColors.accentGold),
@@ -98,9 +104,9 @@ class SecurityDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                const Text(
-                  'Expected Visitors',
-                  style: TextStyle(
+                Text(
+                  l10n.expectedVisitors,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -110,20 +116,22 @@ class SecurityDashboardScreen extends StatelessWidget {
 
                 // Sample Expected Visitor Cards
                 _buildVisitorItem(
-                  visitorName: 'Khalid Al-Ghamdi',
-                  unit: 'Villa V-104 (Dr. Tarek)',
+                  context: context,
+                  visitorName: isAr ? 'خالد الغامدي' : 'Khalid Al-Ghamdi',
+                  unit: isAr ? 'فيلا V-104 (د. طارق)' : 'Villa V-104 (Dr. Tarek)',
                   plate: 'ABC 4567',
-                  time: '18:30 (Today)',
-                  status: 'Expected',
+                  time: '18:30 ${l10n.todaySuffix}',
+                  status: l10n.statusExpected,
                   statusColor: AppColors.statusPending,
                 ),
                 const SizedBox(height: 10),
                 _buildVisitorItem(
-                  visitorName: 'Fahad Al-Shehri',
-                  unit: 'Apt B2-301 (Sara)',
+                  context: context,
+                  visitorName: isAr ? 'فهد الشهري' : 'Fahad Al-Shehri',
+                  unit: isAr ? 'شقة B2-301 (سارة)' : 'Apt B2-301 (Sara)',
                   plate: 'XYZ 9921',
-                  time: '19:15 (Today)',
-                  status: 'Expected',
+                  time: '19:15 ${l10n.todaySuffix}',
+                  status: l10n.statusExpected,
                   statusColor: AppColors.statusPending,
                 ),
               ],
@@ -162,6 +170,7 @@ class SecurityDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildVisitorItem({
+    required BuildContext context,
     required String visitorName,
     required String unit,
     required String plate,
@@ -169,6 +178,8 @@ class SecurityDashboardScreen extends StatelessWidget {
     required String status,
     required Color statusColor,
   }) {
+    final l10n = context.l10n;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -200,7 +211,7 @@ class SecurityDashboardScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          Text('Host: $unit', style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+          Text(l10n.hostPrefix(unit), style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -229,7 +240,7 @@ class SecurityDashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   minimumSize: Size.zero,
                 ),
-                child: const Text('Check In', style: TextStyle(fontSize: 12)),
+                child: Text(l10n.checkIn, style: const TextStyle(fontSize: 12)),
               ),
             ],
           ),

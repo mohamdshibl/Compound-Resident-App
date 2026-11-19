@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../requests/domain/entities/request_enums.dart';
@@ -14,10 +16,12 @@ class ResidentDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final user = (state is Authenticated) ? state.user : null;
-        final name = user?.fullName ?? 'Resident';
+        final name = user?.localizedName(context) ?? l10n.residentFallbackName;
         final unit = user?.primaryUnitNumber ?? 'V-104';
         final isOwner = user?.role.toDbString() == 'owner';
 
@@ -34,22 +38,26 @@ class ResidentDashboardScreen extends StatelessWidget {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  user?.compoundName ?? 'Al-Mohamedia Compound',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Text(
+                    l10n.compoundName,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: AppColors.accentGold,
                 ),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -65,8 +73,8 @@ class ResidentDashboardScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [AppColors.primaryDark, AppColors.primary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                      begin: AlignmentDirectional.topStart,
+                      end: AlignmentDirectional.bottomEnd,
                     ),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
@@ -83,7 +91,7 @@ class ResidentDashboardScreen extends StatelessWidget {
                         radius: 30,
                         backgroundColor: AppColors.accentGold,
                         child: Text(
-                          name.isNotEmpty ? name[0] : 'R',
+                          name.isNotEmpty ? name.characters.first : 'R',
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -98,12 +106,15 @@ class ResidentDashboardScreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  name,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textWhite,
+                                Flexible(
+                                  child: Text(
+                                    name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.textWhite,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 6),
@@ -119,7 +130,7 @@ class ResidentDashboardScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    isOwner ? 'OWNER' : 'TENANT',
+                                    isOwner ? l10n.ownerBadge : l10n.tenantBadge,
                                     style: const TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
@@ -131,7 +142,7 @@ class ResidentDashboardScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Unit $unit • Authorized Residence',
+                              l10n.unitAuthorizedResidence(unit),
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: AppColors.accentGoldLight,
@@ -146,9 +157,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // Quick Services Header
-                const Text(
-                  'Resident Services',
-                  style: TextStyle(
+                Text(
+                  l10n.residentServices,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -168,29 +179,29 @@ class ResidentDashboardScreen extends StatelessWidget {
                     _buildServiceTile(
                       icon: Icons.badge_outlined,
                       color: AppColors.accentTeal,
-                      title: 'Visitor Pass',
-                      subtitle: 'Expected guests & QR',
+                      title: l10n.visitorPass,
+                      subtitle: l10n.visitorPassSubtitle,
                       onTap: () {},
                     ),
                     _buildServiceTile(
                       icon: Icons.handyman_outlined,
                       color: AppColors.statusAssigned,
-                      title: 'Maintenance',
-                      subtitle: 'AC, plumbing & repairs',
+                      title: l10n.maintenance,
+                      subtitle: l10n.maintenanceSubtitle,
                       onTap: () => context.push('/create-request'),
                     ),
                     _buildServiceTile(
                       icon: Icons.sports_tennis_rounded,
                       color: AppColors.accentGold,
-                      title: 'Recreation',
-                      subtitle: 'Padel, gym & pool',
+                      title: l10n.recreation,
+                      subtitle: l10n.recreationSubtitle,
                       onTap: () {},
                     ),
                     _buildServiceTile(
                       icon: Icons.cleaning_services_outlined,
                       color: AppColors.statusInProgress,
-                      title: 'Housekeeping',
-                      subtitle: 'Book certified cleaning',
+                      title: l10n.housekeeping,
+                      subtitle: l10n.housekeepingSubtitle,
                       onTap: () {},
                     ),
                   ],
@@ -201,9 +212,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Active Requests',
-                      style: TextStyle(
+                    Text(
+                      l10n.activeRequests,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -215,9 +226,9 @@ class ResidentDashboardScreen extends StatelessWidget {
                         size: 16,
                         color: AppColors.accentTeal,
                       ),
-                      label: const Text(
-                        'New Request',
-                        style: TextStyle(color: AppColors.accentTeal),
+                      label: Text(
+                        l10n.newRequest,
+                        style: const TextStyle(color: AppColors.accentTeal),
                       ),
                       onPressed: () => context.push('/create-request'),
                     ),
@@ -240,10 +251,10 @@ class ResidentDashboardScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: AppColors.borderLight),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'No active service requests right now.',
-                            style: TextStyle(color: AppColors.textSecondary),
+                            l10n.noActiveRequests,
+                            style: const TextStyle(color: AppColors.textSecondary),
                           ),
                         ),
                       );
@@ -321,14 +332,14 @@ class ResidentDashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            _buildStatusBadge(req.currentStatus),
+            _buildStatusBadge(context, req.currentStatus),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatusBadge(RequestStatus status) {
+  Widget _buildStatusBadge(BuildContext context, RequestStatus status) {
     Color bg;
     Color fg;
     switch (status) {
@@ -358,7 +369,7 @@ class ResidentDashboardScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        status.displayNameEn.toUpperCase(),
+        status.localizedName(context).toUpperCase(),
         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: fg),
       ),
     );
@@ -396,6 +407,8 @@ class ResidentDashboardScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,

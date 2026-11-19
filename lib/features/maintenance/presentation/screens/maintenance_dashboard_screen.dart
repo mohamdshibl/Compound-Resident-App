@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/l10n/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_toggle_button.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../requests/domain/entities/request_enums.dart';
@@ -14,6 +16,8 @@ class MaintenanceDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, authState) {
         final user = (authState is Authenticated) ? authState.user : null;
@@ -22,11 +26,12 @@ class MaintenanceDashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.background,
           appBar: AppBar(
             backgroundColor: AppColors.primaryDark,
-            title: const Text('Maintenance Work Orders'),
+            title: Text(l10n.maintenanceWorkOrders),
             actions: [
+              const LanguageToggleButton(),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: AppColors.accentGold),
-                tooltip: 'Sign Out',
+                tooltip: l10n.signOut,
                 onPressed: () => context.read<AuthCubit>().logout(),
               ),
             ],
@@ -40,7 +45,9 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                   ? allRequests
                   : allRequests.where((r) => r.category == selectedCat).toList();
 
-              final newCount = allRequests.where((r) => r.currentStatus == RequestStatus.pending || r.currentStatus == RequestStatus.underReview).length;
+              final newCount = allRequests
+                  .where((r) => r.currentStatus == RequestStatus.pending || r.currentStatus == RequestStatus.underReview)
+                  .length;
               final assignedCount = allRequests.where((r) => r.currentStatus == RequestStatus.assigned).length;
               final inProgressCount = allRequests.where((r) => r.currentStatus == RequestStatus.inProgress).length;
               final completedCount = allRequests.where((r) => r.currentStatus == RequestStatus.completed).length;
@@ -73,16 +80,16 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  user?.fullName ?? 'Maintenance Lead',
+                                  user?.localizedName(context) ?? l10n.maintenanceLeadFallback,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.textWhite,
                                   ),
                                 ),
-                                const Text(
-                                  'Technical Operations • 4 Technicians on Duty',
-                                  style: TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
+                                Text(
+                                  l10n.maintenanceOperationsSubtitle,
+                                  style: const TextStyle(fontSize: 12, color: AppColors.accentGoldLight),
                                 ),
                               ],
                             ),
@@ -95,13 +102,13 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                     // Metrics Row
                     Row(
                       children: [
-                        _buildMetricCard('New', '$newCount', AppColors.statusPending),
+                        _buildMetricCard(l10n.metricNew, '$newCount', AppColors.statusPending),
                         const SizedBox(width: 8),
-                        _buildMetricCard('Assigned', '$assignedCount', AppColors.statusAssigned),
+                        _buildMetricCard(l10n.metricAssigned, '$assignedCount', AppColors.statusAssigned),
                         const SizedBox(width: 8),
-                        _buildMetricCard('In Progress', '$inProgressCount', AppColors.statusInProgress),
+                        _buildMetricCard(l10n.metricInProgress, '$inProgressCount', AppColors.statusInProgress),
                         const SizedBox(width: 8),
-                        _buildMetricCard('Completed', '$completedCount', AppColors.statusCompleted),
+                        _buildMetricCard(l10n.metricCompleted, '$completedCount', AppColors.statusCompleted),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -113,28 +120,28 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                         children: [
                           _buildFilterChip(
                             context: context,
-                            label: 'All (${allRequests.length})',
+                            label: l10n.filterAll(allRequests.length),
                             isSelected: selectedCat == null,
                             onTap: () => context.read<MaintenanceCubit>().filterByCategory(null),
                           ),
                           const SizedBox(width: 8),
                           _buildFilterChip(
                             context: context,
-                            label: 'AC ❄️',
+                            label: l10n.filterAc,
                             isSelected: selectedCat == RequestCategory.airConditioning,
                             onTap: () => context.read<MaintenanceCubit>().filterByCategory(RequestCategory.airConditioning),
                           ),
                           const SizedBox(width: 8),
                           _buildFilterChip(
                             context: context,
-                            label: 'Plumbing 🚿',
+                            label: l10n.filterPlumbing,
                             isSelected: selectedCat == RequestCategory.plumbing,
                             onTap: () => context.read<MaintenanceCubit>().filterByCategory(RequestCategory.plumbing),
                           ),
                           const SizedBox(width: 8),
                           _buildFilterChip(
                             context: context,
-                            label: 'Electrical ⚡',
+                            label: l10n.filterElectrical,
                             isSelected: selectedCat == RequestCategory.electrical,
                             onTap: () => context.read<MaintenanceCubit>().filterByCategory(RequestCategory.electrical),
                           ),
@@ -144,7 +151,7 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     Text(
-                      'Work Orders (${filteredRequests.length})',
+                      l10n.workOrdersCount(filteredRequests.length),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -161,8 +168,8 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: AppColors.borderLight),
                         ),
-                        child: const Center(
-                          child: Text('No work orders matching this filter.', style: TextStyle(color: AppColors.textSecondary)),
+                        child: Center(
+                          child: Text(l10n.noWorkOrdersFilter, style: const TextStyle(color: AppColors.textSecondary)),
                         ),
                       )
                     else
@@ -242,6 +249,8 @@ class MaintenanceDashboardScreen extends StatelessWidget {
   }
 
   Widget _buildOrderCard(BuildContext context, ServiceRequestEntity req) {
+    final l10n = context.l10n;
+
     Color priorityColor;
     switch (req.priority) {
       case RequestPriority.emergency:
@@ -283,7 +292,7 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    req.priority.displayNameEn.toUpperCase(),
+                    req.priority.localizedName(context).toUpperCase(),
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: priorityColor),
                   ),
                 ),
@@ -292,26 +301,34 @@ class MaintenanceDashboardScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(req.title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Text('${req.category.displayNameEn} • Unit ${req.unitNumber} (${req.createdByName})',
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+            Text(
+              '${req.category.localizedName(context)} • ${l10n.unitWithNumber(req.unitNumber)} (${req.createdByName})',
+              style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+            ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.person_outline_rounded, size: 16, color: AppColors.accentTeal),
-                    const SizedBox(width: 4),
-                    Text(
-                      req.assignedEmployeeName ?? 'Unassigned',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: req.assignedEmployeeName != null ? AppColors.textPrimary : AppColors.statusPending,
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.person_outline_rounded, size: 16, color: AppColors.accentTeal),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          req.assignedEmployeeName ?? l10n.unassigned,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: req.assignedEmployeeName != null ? AppColors.textPrimary : AppColors.statusPending,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () => context.push('/request-detail', extra: req),
                   style: ElevatedButton.styleFrom(
@@ -319,7 +336,7 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     minimumSize: Size.zero,
                   ),
-                  child: const Text('Manage & Chat', style: TextStyle(fontSize: 12)),
+                  child: Text(l10n.manageAndChat, style: const TextStyle(fontSize: 12)),
                 ),
               ],
             ),
