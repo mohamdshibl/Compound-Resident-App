@@ -360,6 +360,27 @@ class RecreationDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
+                if (booking.status == BookingStatus.scheduled) ...[
+                  ElevatedButton(
+                    onPressed: () => context.read<BookingCubit>().updateStatus(
+                          booking.id,
+                          BookingStatus.confirmed,
+                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      minimumSize: Size.zero,
+                    ),
+                    child: Text(
+                      l10n.confirmBookingAction,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
                 ElevatedButton(
                   onPressed: () => context.read<BookingCubit>().updateStatus(
                         booking.id,

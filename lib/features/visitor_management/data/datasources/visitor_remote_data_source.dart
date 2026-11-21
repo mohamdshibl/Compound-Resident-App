@@ -7,6 +7,7 @@ abstract class VisitorRemoteDataSource {
   Stream<List<VisitorPassModel>> streamMyPasses({
     required String residentEmail,
     String? residentId,
+    String compoundId = 'compound_al_mohamedia',
   });
 
   Stream<List<VisitorPassModel>> streamCompoundPasses({
@@ -50,8 +51,12 @@ class VisitorRemoteDataSourceImpl implements VisitorRemoteDataSource {
   Stream<List<VisitorPassModel>> streamMyPasses({
     required String residentEmail,
     String? residentId,
+    String compoundId = 'compound_al_mohamedia',
   }) {
-    Query<Map<String, dynamic>> query = _passesCol;
+    Query<Map<String, dynamic>> query = _passesCol.where(
+      'compoundId',
+      isEqualTo: compoundId,
+    );
     if (residentEmail.isNotEmpty) {
       query = query.where(
         'residentEmail',

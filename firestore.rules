@@ -1,128 +1,740 @@
 rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users/{userId}
+//   - id, email, fullName (<=120), fullNameAr (<=120), phone (<=30), role (enum),
+//     department, compoundId, compoundName, authorizedUnitIds (list <=20),
+//     primaryUnitNumber, avatarUrl (<=500), isActive (bool)
+//
+// Collection: compounds/{compoundId}, buildings/{buildingId}, units/{unitId}
+//   - Scoped by compoundId; read by same-compound authenticated users, write by system_admin
+//
+// Collection: service_requests/{requestId}
+//   - id, requestNumber, compoundId, unitId, unitNumber, createdByUserId,
+//     createdByEmail, createdByName, createdByRole,
+//     department ('maintenance' | 'it_support' | 'administration'),
+//     category, title (1..150), description (1..2000),
+//     priority ('low' | 'medium' | 'high' | 'emergency'),
+//     preferredDate, preferredTimeSlot, currentStatus (8-value enum),
+//     assignedEmployeeId, assignedEmployeeName, attachmentUrls (list <=5),
+//     commentsCount (int 0..10000), hasRating (bool),
+//     ratingValue (int 1..5 | null), ratingFeedback (<=500 | null),
+//     createdAt, updatedAt
+//
+// Subcollection: service_requests/{requestId}/comments/{commentId}
+//   - id, requestId, senderId, senderName, senderRole, message (1..1000),
+//     attachmentUrls (list <=5), createdAt
+//
+// Collection: visitor_passes/{passId}
+//   - id, passCode, compoundId, unitId, unitNumber, residentId, residentEmail,
+//     residentName, visitorName (1..100), visitorPhone (1..30), visitDate,
+//     expectedArrivalTime, vehiclePlate (<=30 | null),
+//     status ('expected' | 'checkedIn' | 'checkedOut' | 'expired' | 'denied'),
+//     checkInTime, checkOutTime, securityNotes (<=500 | null), createdAt
+//
+// Collection: facilities/{facilityId}
+//   - id, compoundId, name (1..120), nameAr, category, hourlyRate (number >=0),
+//     currency, isAvailable (bool), description, capacity, imageUrl
+//
+// Collection: bookings/{bookingId}
+//   - id, bookingNumber, compoundId, facilityOrServiceId, title (1..150), titleAr,
+//     bookingType ('recreation' | 'housekeeping'), userId, userEmail, userName,
+//     unitNumber, bookingDate, startTime, endTime, durationHours (int 1..8),
+//     totalPrice (int 0..10000), currency,
+//     status ('scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'),
+//     assignedStaffName, notes (<=500 | null), hasRating (bool),
+//     ratingValue (int 1..5 | null), ratingFeedback (<=500 | null), createdAt
+//
+// Collection: ratings/{ratingId}
+//   - id, referenceId, serviceType ('maintenance' | 'booking'), compoundId,
+//     userId, rating (int 1..5), feedback (<=500), createdAt
+//
+// ===============================================================
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ===============================================================
+    // Core Auth & Trusted Authority Helpers (Optimized for CEL Budget)
+    // ===============================================================
 
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    function userDocExists() {
-      return isAuthenticated() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
-    function getUserRole() {
-      return userDocExists()
-        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+    function authEmail() {
+      return (isAuthenticated() &&
+        'email' in request.auth.token &&
+        request.auth.token.email is string)
+        ? request.auth.token.email.lower()
+        : '';
+    }
+
+    // Map lookup replaces chained ternaries to minimize CEL expression count
+    function demoRoles() {
+      return {
+        'superadmin@compound.demo': 'system_admin',
+        'admin@compound.demo': 'administration',
+        'security@compound.demo': 'security',
+        'maintenance@compound.demo': 'maintenance',
+        'housekeeping@compound.demo': 'housekeeping',
+        'recreation@compound.demo': 'recreation',
+        'it@compound.demo': 'it_support',
+        'owner@compound.demo': 'owner',
+        'tenant@compound.demo': 'tenant'
+      };
+    }
+
+    // Authority precedence:
+    // 1. Firebase Custom Claims (request.auth.token.role)
+    // 2. Signed JWT demo email mapping
+    // 3. Fallback to locked-down users/{uid} document
+    function userRole() {
+      let email = authEmail();
+      let roles = demoRoles();
+      return !isAuthenticated() ? ''
+        : ('role' in request.auth.token && request.auth.token.role is string)
+          ? request.auth.token.role
+        : email in roles
+          ? roles[email]
+        : exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
         : 'tenant';
     }
 
-    function isSystemAdmin() {
-      return isAuthenticated() && getUserRole() == 'system_admin';
+    function userCompoundId() {
+      let email = authEmail();
+      let roles = demoRoles();
+      return !isAuthenticated() ? ''
+        : ('compoundId' in request.auth.token && request.auth.token.compoundId is string)
+          ? request.auth.token.compoundId
+        : email in roles
+          ? 'compound_al_mohamedia'
+        : exists(/databases/$(database)/documents/users/$(request.auth.uid))
+          ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.compoundId
+        : 'compound_al_mohamedia';
     }
 
-    function isEmployee() {
-      return isAuthenticated() && getUserRole() in [
-        'security',
-        'maintenance',
-        'housekeeping',
-        'recreation',
-        'it_support',
-        'administration',
-        'finance',
-        'reception',
-        'system_admin'
+    function isSystemAdmin() {
+      return isAuthenticated() && userRole() == 'system_admin';
+    }
+
+    function isEmployeeRole(role) {
+      return role in [
+        'security', 'maintenance', 'housekeeping', 'recreation',
+        'it_support', 'administration', 'finance', 'reception', 'system_admin'
       ];
     }
 
-    // Compounds & Units
-    match /compounds/{compoundId} {
-      allow read: if isAuthenticated();
-      allow write: if isSystemAdmin() || isEmployee();
+    function sameCompound(role, docCompoundId) {
+      return role == 'system_admin' ||
+        (docCompoundId is string && docCompoundId == userCompoundId());
     }
 
+    function canManageRequestDept(role, dept) {
+      return role == 'system_admin' ||
+        role == 'administration' ||
+        (dept == 'maintenance' && role == 'maintenance') ||
+        (dept == 'it_support' && role == 'it_support');
+    }
+
+    function canManageBookingType(role, bType) {
+      return role == 'system_admin' ||
+        role == 'administration' ||
+        (bType == 'recreation' && role == 'recreation') ||
+        (bType == 'housekeeping' && role == 'housekeeping');
+    }
+
+    function isEmailOwner(docEmail, email) {
+      return email != '' && docEmail is string && docEmail.lower() == email;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.size() >= 3 && email.size() <= 254;
+    }
+
+    // ===============================================================
+    // Domain Validators (Called on BOTH create and update)
+    // ===============================================================
+
+    function isValidUser(d) {
+      return d.keys().hasOnly([
+          'id', 'email', 'fullName', 'fullNameAr', 'phone', 'role',
+          'department', 'compoundId', 'compoundName', 'authorizedUnitIds',
+          'primaryUnitNumber', 'avatarUrl', 'isActive'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'email', 'fullName', 'phone', 'role', 'compoundId', 'isActive'
+        ]) &&
+        d.id is string && d.id.size() > 0 && d.id.size() <= 128 &&
+        isValidEmail(d.email) &&
+        d.fullName is string && d.fullName.size() > 0 && d.fullName.size() <= 120 &&
+        (!('fullNameAr' in d) || d.fullNameAr == null || (d.fullNameAr is string && d.fullNameAr.size() <= 120)) &&
+        d.phone is string && d.phone.size() <= 30 &&
+        d.role in [
+          'owner', 'tenant', 'security', 'maintenance', 'housekeeping',
+          'recreation', 'it_support', 'administration', 'finance',
+          'reception', 'system_admin'
+        ] &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        (!('authorizedUnitIds' in d) || (d.authorizedUnitIds is list && d.authorizedUnitIds.size() <= 20)) &&
+        (!('avatarUrl' in d) || d.avatarUrl == null || (d.avatarUrl is string && d.avatarUrl.size() <= 500)) &&
+        d.isActive is bool;
+    }
+
+    function isValidServiceRequest(d) {
+      return d.keys().hasOnly([
+          'id', 'requestNumber', 'compoundId', 'unitId', 'unitNumber',
+          'createdByUserId', 'createdByEmail', 'createdByName', 'createdByRole',
+          'department', 'category', 'title', 'description', 'priority',
+          'preferredDate', 'preferredTimeSlot', 'currentStatus',
+          'assignedEmployeeId', 'assignedEmployeeName', 'attachmentUrls',
+          'commentsCount', 'hasRating', 'ratingValue', 'ratingFeedback',
+          'createdAt', 'updatedAt'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'requestNumber', 'compoundId', 'unitId', 'unitNumber',
+          'createdByUserId', 'createdByEmail', 'createdByName', 'createdByRole',
+          'department', 'category', 'title', 'description', 'priority',
+          'preferredDate', 'preferredTimeSlot', 'currentStatus',
+          'attachmentUrls', 'commentsCount', 'hasRating',
+          'createdAt', 'updatedAt'
+        ]) &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        d.createdByUserId is string && d.createdByUserId.size() > 0 && d.createdByUserId.size() <= 128 &&
+        isValidEmail(d.createdByEmail) &&
+        d.department in ['maintenance', 'it_support', 'administration'] &&
+        d.title is string && d.title.size() > 0 && d.title.size() <= 150 &&
+        d.description is string && d.description.size() > 0 && d.description.size() <= 2000 &&
+        d.priority in ['low', 'medium', 'high', 'emergency'] &&
+        d.currentStatus in [
+          'pending', 'under_review', 'assigned', 'in_progress',
+          'waiting_resident', 'completed', 'rejected', 'cancelled'
+        ] &&
+        d.attachmentUrls is list && d.attachmentUrls.size() <= 5 &&
+        d.commentsCount is int && d.commentsCount >= 0 && d.commentsCount <= 10000 &&
+        d.hasRating is bool &&
+        (!('ratingValue' in d) || d.ratingValue == null || (d.ratingValue is int && d.ratingValue >= 1 && d.ratingValue <= 5)) &&
+        (!('ratingFeedback' in d) || d.ratingFeedback == null || (d.ratingFeedback is string && d.ratingFeedback.size() <= 500));
+    }
+
+    function isValidRequestComment(d) {
+      return d.keys().hasOnly([
+          'id', 'requestId', 'senderId', 'senderName', 'senderRole',
+          'message', 'attachmentUrls', 'createdAt'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'requestId', 'senderId', 'senderName', 'senderRole',
+          'message', 'attachmentUrls', 'createdAt'
+        ]) &&
+        d.senderId is string && d.senderId.size() > 0 && d.senderId.size() <= 128 &&
+        d.message is string && d.message.size() > 0 && d.message.size() <= 1000 &&
+        d.attachmentUrls is list && d.attachmentUrls.size() <= 5;
+    }
+
+    function isValidVisitorPass(d) {
+      return d.keys().hasOnly([
+          'id', 'passCode', 'compoundId', 'unitId', 'unitNumber',
+          'residentId', 'residentEmail', 'residentName',
+          'visitorName', 'visitorPhone', 'visitDate', 'expectedArrivalTime',
+          'vehiclePlate', 'status', 'checkInTime', 'checkOutTime',
+          'securityNotes', 'createdAt'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'passCode', 'compoundId', 'unitId', 'unitNumber',
+          'residentId', 'residentEmail', 'residentName',
+          'visitorName', 'visitorPhone', 'visitDate', 'expectedArrivalTime',
+          'status', 'createdAt'
+        ]) &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        d.residentId is string && d.residentId.size() > 0 && d.residentId.size() <= 128 &&
+        isValidEmail(d.residentEmail) &&
+        d.visitorName is string && d.visitorName.size() > 0 && d.visitorName.size() <= 100 &&
+        d.visitorPhone is string && d.visitorPhone.size() > 0 && d.visitorPhone.size() <= 30 &&
+        (!('vehiclePlate' in d) || d.vehiclePlate == null || (d.vehiclePlate is string && d.vehiclePlate.size() <= 30)) &&
+        d.status in ['expected', 'checkedIn', 'checkedOut', 'expired', 'denied'] &&
+        (!('securityNotes' in d) || d.securityNotes == null || (d.securityNotes is string && d.securityNotes.size() <= 500));
+    }
+
+    function isValidFacility(d) {
+      return d.keys().hasOnly([
+          'id', 'compoundId', 'name', 'nameAr', 'category',
+          'hourlyRate', 'currency', 'isAvailable', 'description',
+          'capacity', 'imageUrl'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'compoundId', 'name', 'category', 'hourlyRate', 'isAvailable'
+        ]) &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        d.name is string && d.name.size() > 0 && d.name.size() <= 120 &&
+        d.hourlyRate is number && d.hourlyRate >= 0 && d.hourlyRate <= 100000 &&
+        d.isAvailable is bool;
+    }
+
+    function isValidBooking(d) {
+      return d.keys().hasOnly([
+          'id', 'bookingNumber', 'compoundId', 'facilityOrServiceId',
+          'title', 'titleAr', 'bookingType', 'userId', 'userEmail',
+          'userName', 'unitNumber', 'bookingDate', 'startTime', 'endTime',
+          'durationHours', 'totalPrice', 'currency', 'status',
+          'assignedStaffName', 'notes', 'hasRating', 'ratingValue',
+          'ratingFeedback', 'createdAt'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'bookingNumber', 'compoundId', 'facilityOrServiceId',
+          'title', 'bookingType', 'userId', 'userEmail', 'userName',
+          'unitNumber', 'bookingDate', 'startTime', 'endTime',
+          'durationHours', 'totalPrice', 'status', 'hasRating', 'createdAt'
+        ]) &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        d.title is string && d.title.size() > 0 && d.title.size() <= 150 &&
+        d.bookingType in ['recreation', 'housekeeping'] &&
+        d.userId is string && d.userId.size() > 0 && d.userId.size() <= 128 &&
+        isValidEmail(d.userEmail) &&
+        d.durationHours is int && d.durationHours >= 1 && d.durationHours <= 8 &&
+        d.totalPrice is int && d.totalPrice >= 0 && d.totalPrice <= 10000 &&
+        d.status in ['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled'] &&
+        (!('notes' in d) || d.notes == null || (d.notes is string && d.notes.size() <= 500)) &&
+        d.hasRating is bool &&
+        (!('ratingValue' in d) || d.ratingValue == null || (d.ratingValue is int && d.ratingValue >= 1 && d.ratingValue <= 5)) &&
+        (!('ratingFeedback' in d) || d.ratingFeedback == null || (d.ratingFeedback is string && d.ratingFeedback.size() <= 500));
+    }
+
+    function isValidRating(d) {
+      return d.keys().hasOnly([
+          'id', 'referenceId', 'serviceType', 'compoundId',
+          'userId', 'rating', 'feedback', 'createdAt'
+        ]) &&
+        d.keys().hasAll([
+          'id', 'referenceId', 'serviceType', 'compoundId',
+          'userId', 'rating', 'feedback', 'createdAt'
+        ]) &&
+        d.serviceType in ['maintenance', 'booking'] &&
+        d.compoundId is string && d.compoundId.size() > 0 && d.compoundId.size() <= 64 &&
+        d.userId is string && d.userId.size() > 0 && d.userId.size() <= 128 &&
+        d.rating is int && d.rating >= 1 && d.rating <= 5 &&
+        d.feedback is string && d.feedback.size() <= 500;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // 1. Users (PII-protected; prevents cross-resident scraping & self-escalation)
+    match /users/{userId} {
+      function canReadUser() {
+        let role = userRole();
+        return isAuthenticated() && (
+          request.auth.uid == userId ||
+          (isEmployeeRole(role) && sameCompound(role, resource.data.compoundId))
+        );
+      }
+
+      function canCreateUser() {
+        let d = request.resource.data;
+        let email = authEmail();
+        let roles = demoRoles();
+        return isAuthenticated() && isValidUser(d) && (
+          userRole() == 'system_admin' ||
+          (
+            request.auth.uid == userId &&
+            d.id == request.auth.uid &&
+            d.email.lower() == email &&
+            d.isActive == true &&
+            d.compoundId == 'compound_al_mohamedia' &&
+            (email in roles ? d.role == roles[email] : d.role in ['owner', 'tenant'])
+          )
+        );
+      }
+
+      function canUpdateUser() {
+        let d = request.resource.data;
+        let changed = d.diff(resource.data).affectedKeys();
+        return isAuthenticated() && isValidUser(d) && (
+          userRole() == 'system_admin' ||
+          (
+            request.auth.uid == userId &&
+            !changed.hasAny([
+              'id', 'email', 'role', 'department',
+              'compoundId', 'isActive', 'authorizedUnitIds'
+            ])
+          )
+        );
+      }
+
+      allow read: if canReadUser();
+      allow create: if canCreateUser();
+      allow update: if canUpdateUser();
+      allow delete: if isSystemAdmin();
+    }
+
+    // 2. Compounds
+    match /compounds/{compoundId} {
+      allow read: if isAuthenticated() && sameCompound(userRole(), compoundId);
+      allow create, update, delete: if isSystemAdmin();
+    }
+
+    // 3. Buildings & Units
     match /buildings/{buildingId} {
-      allow read: if isAuthenticated();
-      allow write: if isSystemAdmin();
+      allow read: if isAuthenticated() && sameCompound(userRole(), resource.data.compoundId);
+      allow create, update, delete: if isSystemAdmin();
     }
 
     match /units/{unitId} {
-      allow read: if isAuthenticated();
-      allow write: if isSystemAdmin();
+      allow read: if isAuthenticated() && sameCompound(userRole(), resource.data.compoundId);
+      allow create, update, delete: if isSystemAdmin();
     }
 
-    // Users
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() &&
-        (request.auth.uid == userId || isSystemAdmin());
-      allow delete: if isSystemAdmin();
-    }
-
-    // Service Requests (Maintenance, IT, Admin)
+    // 4. Service Requests (Maintenance, IT Support, Administration)
     match /service_requests/{requestId} {
-      allow read: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.createdByUserId == request.auth.uid ||
-        resource.data.createdByEmail == request.auth.token.email
-      );
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.createdByUserId == request.auth.uid ||
-        resource.data.createdByEmail == request.auth.token.email
-      );
+      function canReadRequest() {
+        let role = userRole();
+        let r = resource.data;
+        let email = authEmail();
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) && (
+            r.createdByUserId == request.auth.uid ||
+            isEmailOwner(r.createdByEmail, email) ||
+            canManageRequestDept(role, r.department)
+          );
+      }
+
+      function canCreateRequest() {
+        let role = userRole();
+        let d = request.resource.data;
+        let email = authEmail();
+        return isAuthenticated() && isValidServiceRequest(d) && (
+          role == 'system_admin' ||
+          (
+            sameCompound(role, d.compoundId) &&
+            d.id == requestId &&
+            d.createdByUserId == request.auth.uid &&
+            d.createdByEmail.lower() == email &&
+            d.currentStatus == 'pending' &&
+            d.commentsCount == 0 &&
+            d.hasRating == false &&
+            (!('ratingValue' in d) || d.ratingValue == null) &&
+            (!('ratingFeedback' in d) || d.ratingFeedback == null) &&
+            (!('assignedEmployeeId' in d) || d.assignedEmployeeId == null) &&
+            (!('assignedEmployeeName' in d) || d.assignedEmployeeName == null)
+          )
+        );
+      }
+
+      function canUpdateRequest() {
+        let role = userRole();
+        let d = request.resource.data;
+        let r = resource.data;
+        let email = authEmail();
+        let changed = d.diff(r).affectedKeys();
+        let isReqOwner = r.createdByUserId == request.auth.uid || isEmailOwner(r.createdByEmail, email);
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) &&
+          isValidServiceRequest(d) && (
+            // Authorized department staff or admin
+            (
+              canManageRequestDept(role, r.department) &&
+              !changed.hasAny([
+                'id', 'requestNumber', 'compoundId', 'createdByUserId',
+                'createdByEmail', 'department', 'createdAt'
+              ])
+            ) ||
+            // Resident owner constrained actions
+            (
+              isReqOwner && (
+                // (a) Increment commentsCount on comment post
+                (
+                  changed.hasOnly(['commentsCount', 'updatedAt']) &&
+                  d.commentsCount == r.commentsCount + 1
+                ) ||
+                // (b) Submit rating on a completed unrated request
+                (
+                  r.currentStatus == 'completed' &&
+                  r.hasRating == false &&
+                  changed.hasOnly(['hasRating', 'ratingValue', 'ratingFeedback', 'updatedAt']) &&
+                  d.hasRating == true &&
+                  d.ratingValue is int && d.ratingValue >= 1 && d.ratingValue <= 5 &&
+                  d.ratingFeedback is string && d.ratingFeedback.size() <= 500
+                ) ||
+                // (c) Cancel own pending or under_review request
+                (
+                  r.currentStatus in ['pending', 'under_review'] &&
+                  changed.hasOnly(['currentStatus', 'updatedAt']) &&
+                  d.currentStatus == 'cancelled'
+                )
+              )
+            )
+          );
+      }
+
+      allow read: if canReadRequest();
+      allow create: if canCreateRequest();
+      allow update: if canUpdateRequest();
       allow delete: if isSystemAdmin();
 
+      // 5. Service Request Comments
       match /comments/{commentId} {
-        allow read, create: if isAuthenticated();
-        allow update, delete: if isSystemAdmin();
+        function canReadComment() {
+          let role = userRole();
+          let email = authEmail();
+          let pPath = /databases/$(database)/documents/service_requests/$(requestId);
+          return isAuthenticated() && exists(pPath) && (
+            sameCompound(role, get(pPath).data.compoundId) && (
+              get(pPath).data.createdByUserId == request.auth.uid ||
+              isEmailOwner(get(pPath).data.createdByEmail, email) ||
+              canManageRequestDept(role, get(pPath).data.department)
+            )
+          );
+        }
+
+        function canCreateComment() {
+          let role = userRole();
+          let email = authEmail();
+          let d = request.resource.data;
+          let pPath = /databases/$(database)/documents/service_requests/$(requestId);
+          return isAuthenticated() && isValidRequestComment(d) && (
+            role == 'system_admin' ||
+            (
+              exists(pPath) &&
+              sameCompound(role, get(pPath).data.compoundId) &&
+              (
+                get(pPath).data.createdByUserId == request.auth.uid ||
+                isEmailOwner(get(pPath).data.createdByEmail, email) ||
+                canManageRequestDept(role, get(pPath).data.department)
+              ) &&
+              d.id == commentId &&
+              d.requestId == requestId &&
+              d.senderId == request.auth.uid
+            )
+          );
+        }
+
+        allow read: if canReadComment();
+        allow create: if canCreateComment();
+        allow update: if isSystemAdmin() && isValidRequestComment(request.resource.data);
+        allow delete: if isSystemAdmin();
       }
     }
 
-    // Visitor Passes
+    // 6. Visitor Passes (Gate Management)
     match /visitor_passes/{passId} {
-      allow read: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.residentId == request.auth.uid ||
-        resource.data.residentEmail == request.auth.token.email
-      );
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.residentId == request.auth.uid ||
-        resource.data.residentEmail == request.auth.token.email
-      );
+      function canReadPass() {
+        let role = userRole();
+        let r = resource.data;
+        let email = authEmail();
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) && (
+            r.residentId == request.auth.uid ||
+            isEmailOwner(r.residentEmail, email) ||
+            role in ['security', 'administration', 'system_admin']
+          );
+      }
+
+      function canCreatePass() {
+        let role = userRole();
+        let d = request.resource.data;
+        let email = authEmail();
+        return isAuthenticated() && isValidVisitorPass(d) && (
+          role == 'system_admin' ||
+          (
+            sameCompound(role, d.compoundId) &&
+            d.id == passId &&
+            d.residentId == request.auth.uid &&
+            d.residentEmail.lower() == email &&
+            d.status == 'expected' &&
+            (!('checkInTime' in d) || d.checkInTime == null) &&
+            (!('checkOutTime' in d) || d.checkOutTime == null)
+          )
+        );
+      }
+
+      function canUpdatePass() {
+        let role = userRole();
+        let d = request.resource.data;
+        let r = resource.data;
+        let email = authEmail();
+        let changed = d.diff(r).affectedKeys();
+        let isPassOwner = r.residentId == request.auth.uid || isEmailOwner(r.residentEmail, email);
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) &&
+          isValidVisitorPass(d) && (
+            // Security & System Admin gate operations
+            (
+              role in ['security', 'system_admin'] &&
+              !changed.hasAny([
+                'id', 'passCode', 'compoundId',
+                'residentId', 'residentEmail', 'createdAt'
+              ])
+            ) ||
+            // Resident owner can ONLY expire/cancel their own expected pass
+            (
+              isPassOwner &&
+              r.status == 'expected' &&
+              changed.hasOnly(['status']) &&
+              d.status == 'expired'
+            )
+          );
+      }
+
+      allow read: if canReadPass();
+      allow create: if canCreatePass();
+      allow update: if canUpdatePass();
       allow delete: if isSystemAdmin();
     }
 
-    // Facilities
+    // 7. Facilities
     match /facilities/{facilityId} {
-      allow read: if isAuthenticated();
-      allow write: if isEmployee();
+      function canCreateFacility() {
+        let role = userRole();
+        let d = request.resource.data;
+        return isAuthenticated() &&
+          role in ['recreation', 'system_admin'] &&
+          sameCompound(role, d.compoundId) &&
+          isValidFacility(d);
+      }
+
+      function canUpdateFacility() {
+        let role = userRole();
+        let d = request.resource.data;
+        return isAuthenticated() &&
+          role in ['recreation', 'system_admin'] &&
+          sameCompound(role, resource.data.compoundId) &&
+          sameCompound(role, d.compoundId) &&
+          !d.diff(resource.data).affectedKeys().hasAny(['id', 'compoundId']) &&
+          isValidFacility(d);
+      }
+
+      function canDeleteFacility() {
+        let role = userRole();
+        return isAuthenticated() &&
+          role in ['recreation', 'system_admin'] &&
+          sameCompound(role, resource.data.compoundId);
+      }
+
+      allow read: if isAuthenticated() && sameCompound(userRole(), resource.data.compoundId);
+      allow create: if canCreateFacility();
+      allow update: if canUpdateFacility();
+      allow delete: if canDeleteFacility();
     }
 
-    // Bookings (Recreation & Housekeeping)
+    // 8. Bookings (Recreation & Housekeeping)
     match /bookings/{bookingId} {
-      allow read: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.userId == request.auth.uid ||
-        resource.data.userEmail == request.auth.token.email
-      );
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (
-        isEmployee() ||
-        resource.data.userId == request.auth.uid ||
-        resource.data.userEmail == request.auth.token.email
-      );
+      function canReadBooking() {
+        let role = userRole();
+        let r = resource.data;
+        let email = authEmail();
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) && (
+            r.userId == request.auth.uid ||
+            isEmailOwner(r.userEmail, email) ||
+            canManageBookingType(role, r.bookingType)
+          );
+      }
+
+      function canCreateBooking() {
+        let role = userRole();
+        let d = request.resource.data;
+        let email = authEmail();
+        return isAuthenticated() && isValidBooking(d) && (
+          role == 'system_admin' ||
+          (
+            sameCompound(role, d.compoundId) &&
+            d.id == bookingId &&
+            d.userId == request.auth.uid &&
+            d.userEmail.lower() == email &&
+            d.status == 'scheduled' &&
+            d.hasRating == false &&
+            (!('ratingValue' in d) || d.ratingValue == null) &&
+            (!('ratingFeedback' in d) || d.ratingFeedback == null) &&
+            (!('assignedStaffName' in d) || d.assignedStaffName == null)
+          )
+        );
+      }
+
+      function canUpdateBooking() {
+        let role = userRole();
+        let d = request.resource.data;
+        let r = resource.data;
+        let email = authEmail();
+        let changed = d.diff(r).affectedKeys();
+        let isBookOwner = r.userId == request.auth.uid || isEmailOwner(r.userEmail, email);
+        return isAuthenticated() &&
+          sameCompound(role, r.compoundId) &&
+          isValidBooking(d) && (
+            // Authorized department staff or admin
+            (
+              canManageBookingType(role, r.bookingType) &&
+              !changed.hasAny([
+                'id', 'bookingNumber', 'compoundId', 'bookingType',
+                'userId', 'userEmail', 'totalPrice', 'durationHours', 'createdAt'
+              ])
+            ) ||
+            // Resident owner constrained actions
+            (
+              isBookOwner && (
+                // (a) Cancel own scheduled or confirmed booking
+                (
+                  r.status in ['scheduled', 'confirmed'] &&
+                  changed.hasOnly(['status']) &&
+                  d.status == 'cancelled'
+                ) ||
+                // (b) Submit rating on a completed unrated booking
+                (
+                  r.status == 'completed' &&
+                  r.hasRating == false &&
+                  changed.hasOnly(['hasRating', 'ratingValue', 'ratingFeedback']) &&
+                  d.hasRating == true &&
+                  d.ratingValue is int && d.ratingValue >= 1 && d.ratingValue <= 5 &&
+                  d.ratingFeedback is string && d.ratingFeedback.size() <= 500
+                )
+              )
+            )
+          );
+      }
+
+      allow read: if canReadBooking();
+      allow create: if canCreateBooking();
+      allow update: if canUpdateBooking();
       allow delete: if isSystemAdmin();
     }
 
-    // Ratings
+    // 9. Ratings
     match /ratings/{ratingId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update, delete: if isSystemAdmin();
+      function canReadRating() {
+        let role = userRole();
+        return isAuthenticated() && (
+          role == 'system_admin' ||
+          resource.data.userId == request.auth.uid ||
+          (isEmployeeRole(role) && sameCompound(role, resource.data.compoundId))
+        );
+      }
+
+      function canCreateRating() {
+        let role = userRole();
+        let d = request.resource.data;
+        return isAuthenticated() &&
+          sameCompound(role, d.compoundId) &&
+          d.id == ratingId &&
+          d.userId == request.auth.uid &&
+          isValidRating(d);
+      }
+
+      allow read: if canReadRating();
+      allow create: if canCreateRating();
+      allow update: if isSystemAdmin() && isValidRating(request.resource.data);
+      allow delete: if isSystemAdmin();
+    }
+
+    // 10. Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

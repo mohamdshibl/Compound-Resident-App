@@ -236,6 +236,34 @@
     }
   },
 
+  "itSupportTile": "الدعم الفني",
+  "itSupportTileSubtitle": "الألياف، الإنتركوم والمنزل الذكي",
+  "managementTile": "إدارة المجمع",
+  "managementTileSubtitle": "الشكاوى والاستفسارات المباشرة",
+  "newItSupportTicket": "تذكرة دعم فني جديدة",
+  "newManagementComplaint": "شكوى مباشرة لإدارة المجمع",
+  "submitToItSupport": "إرسال التذكرة للدعم الفني",
+  "submitToManagement": "إرسال لإدارة المجمع",
+  "noItTicketsYet": "لا توجد تذاكر دعم فني تطابق هذا التصنيف.",
+  "noAdminComplaintsYet": "لا توجد شكاوى أو طلبات حالياً.",
+  "adminFilterComplaints": "شكاوى الإدارة ({count})",
+  "@adminFilterComplaints": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "adminFilterAllCompound": "جميع الأقسام ({count})",
+  "@adminFilterAllCompound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "assignSpecialist": "إسناد مختص",
+  "itSpecOmar": "عمر الغامدي (شبكات وألياف ضوئية)",
+  "itSpecTariq": "طارق الحربي (الإنتركوم والدخول الذكي)",
+  "adminMgrLaila": "ليلى القحطاني (مديرة المجمع)",
+  "adminMgrKhalid": "خالد الدوسري (علاقات السكان)",
+
   "housekeepingAndCleaning": "النظافة المنزلية",
   "housekeepingSupervisorFallback": "مشرفة النظافة",
   "housekeepingRateSubtitle": "السعر القياسي: ١٠٠ ر.س/ساعة • ٦ عاملات نشطات",

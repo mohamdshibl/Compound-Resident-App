@@ -206,6 +206,22 @@ class ResidentDashboardScreen extends StatelessWidget {
                       subtitle: l10n.housekeepingSubtitle,
                       onTap: () => context.push('/housekeeping-booking'),
                     ),
+                    _buildServiceTile(
+                      icon: Icons.router_outlined,
+                      color: AppColors.primary,
+                      title: l10n.itSupportTile,
+                      subtitle: l10n.itSupportTileSubtitle,
+                      onTap: () =>
+                          context.push('/create-request?dept=it_support'),
+                    ),
+                    _buildServiceTile(
+                      icon: Icons.support_agent_rounded,
+                      color: AppColors.statusPending,
+                      title: l10n.managementTile,
+                      subtitle: l10n.managementTileSubtitle,
+                      onTap: () =>
+                          context.push('/create-request?dept=administration'),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),

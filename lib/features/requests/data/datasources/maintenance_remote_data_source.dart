@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../../domain/entities/request_enums.dart';
 import '../models/request_comment_model.dart';
 import '../models/service_request_model.dart';
@@ -70,16 +71,16 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
   }) {
     Query<Map<String, dynamic>> query = _requestsCol;
 
+    if (compoundId != null && compoundId.isNotEmpty) {
+      query = query.where('compoundId', isEqualTo: compoundId);
+    }
+
     // Residents scope strictly by email (or userId) to satisfy Firestore RBAC rules
     if (userEmail != null && userEmail.isNotEmpty) {
       query = query.where('createdByEmail', isEqualTo: userEmail.toLowerCase());
     } else if (userId != null && userId.isNotEmpty) {
       query = query.where('createdByUserId', isEqualTo: userId);
-    } else if (compoundId != null && compoundId.isNotEmpty) {
-      query = query.where('compoundId', isEqualTo: compoundId);
-    }
-
-    if (department != null && department.isNotEmpty && userEmail == null && userId == null) {
+    } else if (department != null && department.isNotEmpty) {
       query = query.where('department', isEqualTo: department);
     }
 
@@ -253,6 +254,8 @@ class MaintenanceRemoteDataSourceImpl implements MaintenanceRemoteDataSource {
       'id': ratingRef.id,
       'referenceId': requestId,
       'serviceType': 'maintenance',
+      'compoundId': 'compound_al_mohamedia',
+      'userId': fb.FirebaseAuth.instance.currentUser?.uid ?? '',
       'rating': rating,
       'feedback': feedback,
       'createdAt': now,

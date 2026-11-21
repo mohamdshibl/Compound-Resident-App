@@ -4,6 +4,7 @@ import 'package:compound_resident/core/l10n/locale_cubit.dart';
 import 'package:compound_resident/features/auth/domain/entities/user_entity.dart';
 import 'package:compound_resident/features/bookings/domain/entities/booking_entity.dart';
 import 'package:compound_resident/features/bookings/presentation/cubit/booking_state.dart';
+import 'package:compound_resident/features/requests/domain/entities/request_enums.dart';
 import 'package:compound_resident/features/visitor_management/domain/entities/visitor_pass_entity.dart';
 import 'package:compound_resident/features/visitor_management/presentation/cubit/visitor_state.dart';
 import 'package:compound_resident/l10n/generated/app_localizations.dart';
@@ -147,5 +148,14 @@ void main() {
     expect(state.housekeepingBookings.length, 1);
     expect(state.recreationBookings.first.localizedTitle(true), 'ملعب البادل ١');
     expect(state.housekeepingBookings.first.totalPrice, 300);
+  });
+
+  test('RequestCategory department routing covers maintenance, IT, and admin', () {
+    expect(RequestCategory.forDepartment('maintenance').length, 5);
+    expect(RequestCategory.forDepartment('it_support').length, 3);
+    expect(RequestCategory.forDepartment('administration').length, 3);
+    expect(RequestCategory.internetFiber.department, 'it_support');
+    expect(RequestCategory.managementComplaint.department, 'administration');
+    expect(RequestCategory.airConditioning.department, 'maintenance');
   });
 }

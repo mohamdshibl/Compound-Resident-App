@@ -84,7 +84,7 @@ class _RecreationBookingScreenState extends State<RecreationBookingScreen> {
       endTime: _computeEndTime(_selectedStartHour, _durationHours),
       durationHours: _durationHours,
       totalPrice: total,
-      status: BookingStatus.confirmed,
+      status: BookingStatus.scheduled,
       createdAt: DateTime.now(),
     );
 

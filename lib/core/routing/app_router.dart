@@ -87,7 +87,10 @@ class AppRouter {
         ),
         GoRoute(
           path: '/create-request',
-          builder: (context, state) => const CreateRequestScreen(),
+          builder: (context, state) {
+            final dept = state.uri.queryParameters['dept'] ?? 'maintenance';
+            return CreateRequestScreen(department: dept);
+          },
         ),
         GoRoute(
           path: '/request-detail',

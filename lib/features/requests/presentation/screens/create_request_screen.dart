@@ -12,7 +12,12 @@ import '../cubit/maintenance_cubit.dart';
 import '../cubit/maintenance_state.dart';
 
 class CreateRequestScreen extends StatefulWidget {
-  const CreateRequestScreen({super.key});
+  final String department;
+
+  const CreateRequestScreen({
+    super.key,
+    this.department = 'maintenance',
+  });
 
   @override
   State<CreateRequestScreen> createState() => _CreateRequestScreenState();
@@ -20,12 +25,20 @@ class CreateRequestScreen extends StatefulWidget {
 
 class _CreateRequestScreenState extends State<CreateRequestScreen> {
   final _formKey = GlobalKey<FormState>();
-  RequestCategory _selectedCategory = RequestCategory.airConditioning;
+  late List<RequestCategory> _availableCategories;
+  late RequestCategory _selectedCategory;
   RequestPriority _selectedPriority = RequestPriority.medium;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final DateTime _preferredDate = DateTime.now().add(const Duration(days: 1));
   String _preferredTimeSlot = '14:00 - 16:00';
+
+  @override
+  void initState() {
+    super.initState();
+    _availableCategories = RequestCategory.forDepartment(widget.department);
+    _selectedCategory = _availableCategories.first;
+  }
 
   final List<String> _timeSlots = [
     '09:00 - 12:00',
@@ -49,8 +62,15 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
     if (authState is! Authenticated) return;
     final user = authState.user;
 
-    final requestId = 'req_${DateTime.now().millisecondsSinceEpoch}';
-    final requestNumber = 'REQ-2026-${(1000 + DateTime.now().millisecond).toString()}';
+    final prefix = widget.department == 'it_support'
+        ? 'IT'
+        : widget.department == 'administration'
+            ? 'ADM'
+            : 'REQ';
+    final requestId =
+        '${prefix.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}';
+    final requestNumber =
+        '$prefix-2026-${(1000 + DateTime.now().millisecond).toString()}';
 
     final request = ServiceRequestEntity(
       id: requestId,
@@ -62,6 +82,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
       createdByEmail: user.email,
       createdByName: user.localizedName(context),
       createdByRole: user.role.toDbString(),
+      department: widget.department,
       category: _selectedCategory,
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
@@ -80,6 +101,17 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final formattedDate = '${_preferredDate.day}/${_preferredDate.month}/${_preferredDate.year}';
+
+    final screenTitle = widget.department == 'it_support'
+        ? l10n.newItSupportTicket
+        : widget.department == 'administration'
+            ? l10n.newManagementComplaint
+            : l10n.newMaintenanceRequest;
+    final submitLabel = widget.department == 'it_support'
+        ? l10n.submitToItSupport
+        : widget.department == 'administration'
+            ? l10n.submitToManagement
+            : l10n.submitRequestToMaintenance;
 
     return BlocListener<MaintenanceCubit, MaintenanceState>(
       listener: (context, state) {
@@ -106,7 +138,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.primaryDark,
-          title: Text(l10n.newMaintenanceRequest),
+          title: Text(screenTitle),
           actions: const [
             LanguageToggleButton(),
           ],
@@ -127,7 +159,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: RequestCategory.values.map((cat) {
+                  children: _availableCategories.map((cat) {
                     final isSelected = _selectedCategory == cat;
                     return InkWell(
                       onTap: () => setState(() => _selectedCategory = cat),
@@ -292,7 +324,7 @@ class _CreateRequestScreenState extends State<CreateRequestScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textWhite),
                             )
-                          : Text(l10n.submitRequestToMaintenance),
+                          : Text(submitLabel),
                     );
                   },
                 ),

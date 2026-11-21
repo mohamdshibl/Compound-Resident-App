@@ -545,6 +545,61 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get itSupportTile => 'الدعم الفني';
+
+  @override
+  String get itSupportTileSubtitle => 'الألياف، الإنتركوم والمنزل الذكي';
+
+  @override
+  String get managementTile => 'إدارة المجمع';
+
+  @override
+  String get managementTileSubtitle => 'الشكاوى والاستفسارات المباشرة';
+
+  @override
+  String get newItSupportTicket => 'تذكرة دعم فني جديدة';
+
+  @override
+  String get newManagementComplaint => 'شكوى مباشرة لإدارة المجمع';
+
+  @override
+  String get submitToItSupport => 'إرسال التذكرة للدعم الفني';
+
+  @override
+  String get submitToManagement => 'إرسال لإدارة المجمع';
+
+  @override
+  String get noItTicketsYet => 'لا توجد تذاكر دعم فني تطابق هذا التصنيف.';
+
+  @override
+  String get noAdminComplaintsYet => 'لا توجد شكاوى أو طلبات حالياً.';
+
+  @override
+  String adminFilterComplaints(int count) {
+    return 'شكاوى الإدارة ($count)';
+  }
+
+  @override
+  String adminFilterAllCompound(int count) {
+    return 'جميع الأقسام ($count)';
+  }
+
+  @override
+  String get assignSpecialist => 'إسناد مختص';
+
+  @override
+  String get itSpecOmar => 'عمر الغامدي (شبكات وألياف ضوئية)';
+
+  @override
+  String get itSpecTariq => 'طارق الحربي (الإنتركوم والدخول الذكي)';
+
+  @override
+  String get adminMgrLaila => 'ليلى القحطاني (مديرة المجمع)';
+
+  @override
+  String get adminMgrKhalid => 'خالد الدوسري (علاقات السكان)';
+
+  @override
   String get housekeepingAndCleaning => 'النظافة المنزلية';
 
   @override

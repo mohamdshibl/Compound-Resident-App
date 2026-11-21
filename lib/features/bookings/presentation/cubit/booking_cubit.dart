@@ -52,11 +52,15 @@ class BookingCubit extends Cubit<BookingState> {
 
   void listenToCompoundBookings({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   }) {
     emit(const BookingLoading());
     _bookingsSub?.cancel();
 
-    _bookingsSub = _getCompoundBookingsUseCase(compoundId: compoundId).listen(
+    _bookingsSub = _getCompoundBookingsUseCase(
+      compoundId: compoundId,
+      bookingType: bookingType,
+    ).listen(
       (bookings) {
         if (state is BookingLoaded) {
           emit((state as BookingLoaded).copyWith(bookings: bookings));

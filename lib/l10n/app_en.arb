@@ -236,6 +236,34 @@
     }
   },
 
+  "itSupportTile": "IT Support",
+  "itSupportTileSubtitle": "Fiber, intercom & smart home",
+  "managementTile": "Management",
+  "managementTileSubtitle": "Complaints & direct inquiries",
+  "newItSupportTicket": "New IT Support Ticket",
+  "newManagementComplaint": "Direct Management Complaint",
+  "submitToItSupport": "Submit Ticket to IT Support",
+  "submitToManagement": "Submit to Compound Management",
+  "noItTicketsYet": "No IT support tickets matching this filter.",
+  "noAdminComplaintsYet": "No complaints or requests found.",
+  "adminFilterComplaints": "Direct Complaints ({count})",
+  "@adminFilterComplaints": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "adminFilterAllCompound": "All Departments ({count})",
+  "@adminFilterAllCompound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "assignSpecialist": "Assign Specialist",
+  "itSpecOmar": "Omar Al-Ghamdi (Senior Network & Fiber)",
+  "itSpecTariq": "Tariq Al-Harbi (Smart Access & Intercom)",
+  "adminMgrLaila": "Laila Al-Qahtani (Compound Director)",
+  "adminMgrKhalid": "Khalid Al-Dosari (Resident Relations)",
+
   "housekeepingAndCleaning": "Housekeeping & Cleaning",
   "housekeepingSupervisorFallback": "Housekeeping Supervisor",
   "housekeepingRateSubtitle": "Standard Rate: 100 SAR/hr • 6 Cleaning Staff Active",

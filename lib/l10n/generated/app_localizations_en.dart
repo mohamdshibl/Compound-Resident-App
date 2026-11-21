@@ -550,6 +550,61 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get itSupportTile => 'IT Support';
+
+  @override
+  String get itSupportTileSubtitle => 'Fiber, intercom & smart home';
+
+  @override
+  String get managementTile => 'Management';
+
+  @override
+  String get managementTileSubtitle => 'Complaints & direct inquiries';
+
+  @override
+  String get newItSupportTicket => 'New IT Support Ticket';
+
+  @override
+  String get newManagementComplaint => 'Direct Management Complaint';
+
+  @override
+  String get submitToItSupport => 'Submit Ticket to IT Support';
+
+  @override
+  String get submitToManagement => 'Submit to Compound Management';
+
+  @override
+  String get noItTicketsYet => 'No IT support tickets matching this filter.';
+
+  @override
+  String get noAdminComplaintsYet => 'No complaints or requests found.';
+
+  @override
+  String adminFilterComplaints(int count) {
+    return 'Direct Complaints ($count)';
+  }
+
+  @override
+  String adminFilterAllCompound(int count) {
+    return 'All Departments ($count)';
+  }
+
+  @override
+  String get assignSpecialist => 'Assign Specialist';
+
+  @override
+  String get itSpecOmar => 'Omar Al-Ghamdi (Senior Network & Fiber)';
+
+  @override
+  String get itSpecTariq => 'Tariq Al-Harbi (Smart Access & Intercom)';
+
+  @override
+  String get adminMgrLaila => 'Laila Al-Qahtani (Compound Director)';
+
+  @override
+  String get adminMgrKhalid => 'Khalid Al-Dosari (Resident Relations)';
+
+  @override
   String get housekeepingAndCleaning => 'Housekeeping & Cleaning';
 
   @override

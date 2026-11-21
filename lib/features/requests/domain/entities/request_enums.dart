@@ -1,9 +1,20 @@
 enum RequestCategory {
+  // Maintenance
   airConditioning,
   plumbing,
   electrical,
   refrigerators,
-  generalMaintenance;
+  generalMaintenance,
+
+  // IT Support
+  internetFiber,
+  smartIntercom,
+  cctvSmartHome,
+
+  // Administration & Complaints
+  managementComplaint,
+  noiseNeighbor,
+  billingLease;
 
   static RequestCategory fromString(String? val) {
     switch (val?.toLowerCase().trim()) {
@@ -17,8 +28,67 @@ enum RequestCategory {
       case 'refrigerators':
       case 'appliances':
         return RequestCategory.refrigerators;
+      case 'internet_fiber':
+      case 'fiber':
+      case 'wifi':
+        return RequestCategory.internetFiber;
+      case 'smart_intercom':
+      case 'intercom':
+        return RequestCategory.smartIntercom;
+      case 'cctv_smart_home':
+      case 'smart_home':
+        return RequestCategory.cctvSmartHome;
+      case 'management_complaint':
+      case 'complaint':
+        return RequestCategory.managementComplaint;
+      case 'noise_neighbor':
+      case 'noise':
+        return RequestCategory.noiseNeighbor;
+      case 'billing_lease':
+      case 'billing':
+        return RequestCategory.billingLease;
       default:
         return RequestCategory.generalMaintenance;
+    }
+  }
+
+  static List<RequestCategory> forDepartment(String department) {
+    switch (department) {
+      case 'it_support':
+        return const [
+          RequestCategory.internetFiber,
+          RequestCategory.smartIntercom,
+          RequestCategory.cctvSmartHome,
+        ];
+      case 'administration':
+        return const [
+          RequestCategory.managementComplaint,
+          RequestCategory.noiseNeighbor,
+          RequestCategory.billingLease,
+        ];
+      default:
+        return const [
+          RequestCategory.airConditioning,
+          RequestCategory.plumbing,
+          RequestCategory.electrical,
+          RequestCategory.refrigerators,
+          RequestCategory.generalMaintenance,
+        ];
+    }
+  }
+
+  String get department {
+    switch (this) {
+      case RequestCategory.internetFiber:
+      case RequestCategory.smartIntercom:
+      case RequestCategory.cctvSmartHome:
+        return 'it_support';
+      case RequestCategory.managementComplaint:
+      case RequestCategory.noiseNeighbor:
+      case RequestCategory.billingLease:
+        return 'administration';
+      default:
+        return 'maintenance';
     }
   }
 
@@ -34,6 +104,18 @@ enum RequestCategory {
         return 'refrigerators';
       case RequestCategory.generalMaintenance:
         return 'general_maintenance';
+      case RequestCategory.internetFiber:
+        return 'internet_fiber';
+      case RequestCategory.smartIntercom:
+        return 'smart_intercom';
+      case RequestCategory.cctvSmartHome:
+        return 'cctv_smart_home';
+      case RequestCategory.managementComplaint:
+        return 'management_complaint';
+      case RequestCategory.noiseNeighbor:
+        return 'noise_neighbor';
+      case RequestCategory.billingLease:
+        return 'billing_lease';
     }
   }
 
@@ -49,6 +131,18 @@ enum RequestCategory {
         return 'Home Appliances';
       case RequestCategory.generalMaintenance:
         return 'General Maintenance';
+      case RequestCategory.internetFiber:
+        return 'Fiber & Wi-Fi';
+      case RequestCategory.smartIntercom:
+        return 'Smart Intercom';
+      case RequestCategory.cctvSmartHome:
+        return 'CCTV & Smart Home';
+      case RequestCategory.managementComplaint:
+        return 'Management Complaint';
+      case RequestCategory.noiseNeighbor:
+        return 'Noise & Rules';
+      case RequestCategory.billingLease:
+        return 'Billing & Lease';
     }
   }
 
@@ -64,6 +158,18 @@ enum RequestCategory {
         return 'أجهزة منزلية';
       case RequestCategory.generalMaintenance:
         return 'صيانة عامة';
+      case RequestCategory.internetFiber:
+        return 'إنترنت وألياف ضوئية';
+      case RequestCategory.smartIntercom:
+        return 'الإنتركوم الذكي';
+      case RequestCategory.cctvSmartHome:
+        return 'كاميرات والمنزل الذكي';
+      case RequestCategory.managementComplaint:
+        return 'شكوى لإدارة المجمع';
+      case RequestCategory.noiseNeighbor:
+        return 'إزعاج وقواعد المجمع';
+      case RequestCategory.billingLease:
+        return 'الفواتير وعقود الإيجار';
     }
   }
 
@@ -79,6 +185,18 @@ enum RequestCategory {
         return '🧊';
       case RequestCategory.generalMaintenance:
         return '🔨';
+      case RequestCategory.internetFiber:
+        return '🌐';
+      case RequestCategory.smartIntercom:
+        return '📱';
+      case RequestCategory.cctvSmartHome:
+        return '📹';
+      case RequestCategory.managementComplaint:
+        return '📋';
+      case RequestCategory.noiseNeighbor:
+        return '🔇';
+      case RequestCategory.billingLease:
+        return '💳';
     }
   }
 }

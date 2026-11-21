@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../../domain/entities/booking_entity.dart';
 import '../models/booking_model.dart';
 
@@ -6,10 +7,12 @@ abstract class BookingRemoteDataSource {
   Stream<List<BookingModel>> streamMyBookings({
     required String userEmail,
     String? userId,
+    String compoundId = 'compound_al_mohamedia',
   });
 
   Stream<List<BookingModel>> streamCompoundBookings({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   });
 
   Future<BookingModel> createBooking(BookingModel booking);
@@ -50,8 +53,12 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
   Stream<List<BookingModel>> streamMyBookings({
     required String userEmail,
     String? userId,
+    String compoundId = 'compound_al_mohamedia',
   }) {
-    Query<Map<String, dynamic>> query = _bookingsCol;
+    Query<Map<String, dynamic>> query = _bookingsCol.where(
+      'compoundId',
+      isEqualTo: compoundId,
+    );
     if (userEmail.isNotEmpty) {
       query = query.where(
         'userEmail',
@@ -67,12 +74,16 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
   @override
   Stream<List<BookingModel>> streamCompoundBookings({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   }) {
-    return _bookingsCol
-        .where('compoundId', isEqualTo: compoundId)
-        .limit(20)
-        .snapshots()
-        .map(_mapAndSort);
+    Query<Map<String, dynamic>> query = _bookingsCol.where(
+      'compoundId',
+      isEqualTo: compoundId,
+    );
+    if (bookingType != null) {
+      query = query.where('bookingType', isEqualTo: bookingType.toDbString());
+    }
+    return query.limit(20).snapshots().map(_mapAndSort);
   }
 
   @override
@@ -119,6 +130,8 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
       'id': ratingRef.id,
       'referenceId': bookingId,
       'serviceType': 'booking',
+      'compoundId': 'compound_al_mohamedia',
+      'userId': fb.FirebaseAuth.instance.currentUser?.uid ?? '',
       'rating': rating,
       'feedback': feedback,
       'createdAt': now,

@@ -5,8 +5,10 @@ import 'core/di/injection_container.dart';
 import 'core/l10n/locale_cubit.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/domain/entities/user_entity.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/auth_state.dart';
+import 'features/bookings/domain/entities/booking_entity.dart';
 import 'features/bookings/presentation/cubit/booking_cubit.dart';
 import 'features/requests/presentation/cubit/maintenance_cubit.dart';
 import 'features/visitor_management/presentation/cubit/visitor_cubit.dart';
@@ -51,20 +53,71 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
   void _syncFirestoreStreams(AuthState authState) {
     if (authState is Authenticated) {
       final user = authState.user;
-      if (user.isResident) {
-        _maintenanceCubit.listenToRequests(userEmail: user.email);
-        _visitorCubit.listenToMyPasses(
-          residentEmail: user.email,
-          residentId: user.id,
-        );
-        _bookingCubit.listenToMyBookings(
-          userEmail: user.email,
-          userId: user.id,
-        );
-      } else {
-        _maintenanceCubit.listenToRequests(compoundId: user.compoundId);
-        _visitorCubit.listenToCompoundPasses(compoundId: user.compoundId);
-        _bookingCubit.listenToCompoundBookings(compoundId: user.compoundId);
+      switch (user.role) {
+        case UserRole.owner:
+        case UserRole.tenant:
+          _maintenanceCubit.listenToRequests(
+            compoundId: user.compoundId,
+            userEmail: user.email,
+          );
+          _visitorCubit.listenToMyPasses(
+            residentEmail: user.email,
+            residentId: user.id,
+          );
+          _bookingCubit.listenToMyBookings(
+            userEmail: user.email,
+            userId: user.id,
+          );
+          break;
+        case UserRole.maintenance:
+          _maintenanceCubit.listenToRequests(
+            compoundId: user.compoundId,
+            department: 'maintenance',
+          );
+          _visitorCubit.clear();
+          _bookingCubit.clear();
+          break;
+        case UserRole.itSupport:
+          _maintenanceCubit.listenToRequests(
+            compoundId: user.compoundId,
+            department: 'it_support',
+          );
+          _visitorCubit.clear();
+          _bookingCubit.clear();
+          break;
+        case UserRole.security:
+          _maintenanceCubit.clear();
+          _visitorCubit.listenToCompoundPasses(compoundId: user.compoundId);
+          _bookingCubit.clear();
+          break;
+        case UserRole.recreation:
+          _maintenanceCubit.clear();
+          _visitorCubit.clear();
+          _bookingCubit.listenToCompoundBookings(
+            compoundId: user.compoundId,
+            bookingType: BookingType.recreation,
+          );
+          break;
+        case UserRole.housekeeping:
+          _maintenanceCubit.clear();
+          _visitorCubit.clear();
+          _bookingCubit.listenToCompoundBookings(
+            compoundId: user.compoundId,
+            bookingType: BookingType.housekeeping,
+          );
+          break;
+        case UserRole.administration:
+        case UserRole.finance:
+        case UserRole.reception:
+          _maintenanceCubit.listenToRequests(compoundId: user.compoundId);
+          _visitorCubit.clear();
+          _bookingCubit.clear();
+          break;
+        case UserRole.systemAdmin:
+          _maintenanceCubit.listenToRequests(compoundId: user.compoundId);
+          _visitorCubit.listenToCompoundPasses(compoundId: user.compoundId);
+          _bookingCubit.listenToCompoundBookings(compoundId: user.compoundId);
+          break;
       }
     } else if (authState is Unauthenticated) {
       _maintenanceCubit.clear();

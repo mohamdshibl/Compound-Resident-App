@@ -1100,6 +1100,108 @@ abstract class AppLocalizations {
   /// **'{amount} SAR/hr'**
   String ratePerHour(int amount);
 
+  /// No description provided for @itSupportTile.
+  ///
+  /// In en, this message translates to:
+  /// **'IT Support'**
+  String get itSupportTile;
+
+  /// No description provided for @itSupportTileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fiber, intercom & smart home'**
+  String get itSupportTileSubtitle;
+
+  /// No description provided for @managementTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Management'**
+  String get managementTile;
+
+  /// No description provided for @managementTileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints & direct inquiries'**
+  String get managementTileSubtitle;
+
+  /// No description provided for @newItSupportTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'New IT Support Ticket'**
+  String get newItSupportTicket;
+
+  /// No description provided for @newManagementComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Management Complaint'**
+  String get newManagementComplaint;
+
+  /// No description provided for @submitToItSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Ticket to IT Support'**
+  String get submitToItSupport;
+
+  /// No description provided for @submitToManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit to Compound Management'**
+  String get submitToManagement;
+
+  /// No description provided for @noItTicketsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No IT support tickets matching this filter.'**
+  String get noItTicketsYet;
+
+  /// No description provided for @noAdminComplaintsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No complaints or requests found.'**
+  String get noAdminComplaintsYet;
+
+  /// No description provided for @adminFilterComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Complaints ({count})'**
+  String adminFilterComplaints(int count);
+
+  /// No description provided for @adminFilterAllCompound.
+  ///
+  /// In en, this message translates to:
+  /// **'All Departments ({count})'**
+  String adminFilterAllCompound(int count);
+
+  /// No description provided for @assignSpecialist.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Specialist'**
+  String get assignSpecialist;
+
+  /// No description provided for @itSpecOmar.
+  ///
+  /// In en, this message translates to:
+  /// **'Omar Al-Ghamdi (Senior Network & Fiber)'**
+  String get itSpecOmar;
+
+  /// No description provided for @itSpecTariq.
+  ///
+  /// In en, this message translates to:
+  /// **'Tariq Al-Harbi (Smart Access & Intercom)'**
+  String get itSpecTariq;
+
+  /// No description provided for @adminMgrLaila.
+  ///
+  /// In en, this message translates to:
+  /// **'Laila Al-Qahtani (Compound Director)'**
+  String get adminMgrLaila;
+
+  /// No description provided for @adminMgrKhalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Khalid Al-Dosari (Resident Relations)'**
+  String get adminMgrKhalid;
+
   /// No description provided for @housekeepingAndCleaning.
   ///
   /// In en, this message translates to:

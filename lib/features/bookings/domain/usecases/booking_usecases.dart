@@ -18,8 +18,12 @@ class GetCompoundBookingsUseCase {
 
   Stream<List<BookingEntity>> call({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   }) =>
-      _repository.streamCompoundBookings(compoundId: compoundId);
+      _repository.streamCompoundBookings(
+        compoundId: compoundId,
+        bookingType: bookingType,
+      );
 }
 
 class CreateBookingUseCase {

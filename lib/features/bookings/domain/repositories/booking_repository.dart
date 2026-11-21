@@ -10,6 +10,7 @@ abstract class BookingRepository {
   /// Live Cloud Firestore stream of all compound bookings (Recreation & Housekeeping staff).
   Stream<List<BookingEntity>> streamCompoundBookings({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   });
 
   /// Create a new facility or housekeeping booking in Cloud Firestore.

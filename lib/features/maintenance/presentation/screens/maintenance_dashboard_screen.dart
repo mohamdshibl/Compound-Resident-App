@@ -57,7 +57,11 @@ class MaintenanceDashboardScreen extends StatelessWidget {
                 );
               }
 
-              final allRequests = (mState is MaintenanceLoaded) ? mState.requests : <ServiceRequestEntity>[];
+              final allRequests = (mState is MaintenanceLoaded)
+                  ? mState.requests
+                      .where((r) => r.department == 'maintenance')
+                      .toList()
+                  : <ServiceRequestEntity>[];
               final selectedCat = (mState is MaintenanceLoaded) ? mState.selectedCategory : null;
 
               final filteredRequests = selectedCat == null

@@ -22,8 +22,12 @@ class BookingRepositoryImpl implements BookingRepository {
   @override
   Stream<List<BookingEntity>> streamCompoundBookings({
     String compoundId = 'compound_al_mohamedia',
+    BookingType? bookingType,
   }) {
-    return remoteDataSource.streamCompoundBookings(compoundId: compoundId);
+    return remoteDataSource.streamCompoundBookings(
+      compoundId: compoundId,
+      bookingType: bookingType,
+    );
   }
 
   @override

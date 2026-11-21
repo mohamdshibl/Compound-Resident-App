@@ -59,11 +59,24 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (ctx) {
-        final techs = [
-          {'id': 'usr_tech_mahmoud', 'name': l10n.techMahmoud},
-          {'id': 'usr_tech_salem', 'name': l10n.techSalem},
-          {'id': 'usr_maint_hassan', 'name': l10n.techHassan},
-        ];
+        final List<Map<String, String>> techs;
+        if (req.department == 'it_support') {
+          techs = [
+            {'id': 'usr_it_omar', 'name': l10n.itSpecOmar},
+            {'id': 'usr_it_tariq', 'name': l10n.itSpecTariq},
+          ];
+        } else if (req.department == 'administration') {
+          techs = [
+            {'id': 'usr_adm_laila', 'name': l10n.adminMgrLaila},
+            {'id': 'usr_adm_khalid', 'name': l10n.adminMgrKhalid},
+          ];
+        } else {
+          techs = [
+            {'id': 'usr_tech_mahmoud', 'name': l10n.techMahmoud},
+            {'id': 'usr_tech_salem', 'name': l10n.techSalem},
+            {'id': 'usr_maint_hassan', 'name': l10n.techHassan},
+          ];
+        }
 
         return Padding(
           padding: const EdgeInsets.all(20),
@@ -71,7 +84,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.assignTechnician, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                req.department == 'maintenance'
+                    ? l10n.assignTechnician
+                    : l10n.assignSpecialist,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 14),
               ...techs.map(
                 (t) => ListTile(
