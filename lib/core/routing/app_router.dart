@@ -8,6 +8,8 @@ import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
+import '../../features/bookings/presentation/screens/housekeeping_booking_screen.dart';
+import '../../features/bookings/presentation/screens/recreation_booking_screen.dart';
 import '../../features/housekeeping/presentation/screens/housekeeping_dashboard_screen.dart';
 import '../../features/it_support/presentation/screens/it_dashboard_screen.dart';
 import '../../features/maintenance/presentation/screens/maintenance_dashboard_screen.dart';
@@ -101,6 +103,14 @@ class AppRouter {
         GoRoute(
           path: '/create-visitor-pass',
           builder: (context, state) => const CreateVisitorPassScreen(),
+        ),
+        GoRoute(
+          path: '/recreation-booking',
+          builder: (context, state) => const RecreationBookingScreen(),
+        ),
+        GoRoute(
+          path: '/housekeeping-booking',
+          builder: (context, state) => const HousekeepingBookingScreen(),
         ),
       ],
     );

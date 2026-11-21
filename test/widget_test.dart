@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:compound_resident/core/l10n/locale_cubit.dart';
 import 'package:compound_resident/features/auth/domain/entities/user_entity.dart';
+import 'package:compound_resident/features/bookings/domain/entities/booking_entity.dart';
+import 'package:compound_resident/features/bookings/presentation/cubit/booking_state.dart';
 import 'package:compound_resident/features/visitor_management/domain/entities/visitor_pass_entity.dart';
 import 'package:compound_resident/features/visitor_management/presentation/cubit/visitor_state.dart';
 import 'package:compound_resident/l10n/generated/app_localizations.dart';
@@ -95,5 +97,55 @@ void main() {
     final stateByCode = state.copyWith(searchQuery: 'VP-3344');
     expect(stateByCode.expectedPasses.length, 0);
     expect(stateByCode.checkedInPasses.length, 1);
+  });
+
+  test('BookingLoaded separates recreation and housekeeping bookings', () {
+    final now = DateTime.now();
+    final b1 = BookingEntity(
+      id: 'bk_1',
+      bookingNumber: 'BK-2026-3310',
+      compoundId: 'compound_al_mohamedia',
+      facilityOrServiceId: 'fac_padel_1',
+      title: 'Padel Court 1',
+      titleAr: 'ملعب البادل ١',
+      bookingType: BookingType.recreation,
+      userId: 'usr_1',
+      userEmail: 'owner@compound.demo',
+      userName: 'Dr. Tarek',
+      unitNumber: 'V-104',
+      bookingDate: now,
+      startTime: '19:00',
+      endTime: '20:00',
+      durationHours: 1,
+      totalPrice: 80,
+      status: BookingStatus.confirmed,
+      createdAt: now,
+    );
+    final b2 = BookingEntity(
+      id: 'bk_2',
+      bookingNumber: 'HK-2026-8102',
+      compoundId: 'compound_al_mohamedia',
+      facilityOrServiceId: 'hk_deep',
+      title: 'Deep Villa Cleaning',
+      titleAr: 'تنظيف عميق للفيلا',
+      bookingType: BookingType.housekeeping,
+      userId: 'usr_1',
+      userEmail: 'owner@compound.demo',
+      userName: 'Dr. Tarek',
+      unitNumber: 'V-104',
+      bookingDate: now,
+      startTime: '10:00',
+      endTime: '13:00',
+      durationHours: 3,
+      totalPrice: 300,
+      status: BookingStatus.scheduled,
+      createdAt: now,
+    );
+
+    final state = BookingLoaded(bookings: [b1, b2]);
+    expect(state.recreationBookings.length, 1);
+    expect(state.housekeepingBookings.length, 1);
+    expect(state.recreationBookings.first.localizedTitle(true), 'ملعب البادل ١');
+    expect(state.housekeepingBookings.first.totalPrice, 300);
   });
 }

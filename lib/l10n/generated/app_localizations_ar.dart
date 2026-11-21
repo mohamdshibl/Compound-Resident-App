@@ -451,6 +451,100 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get bookFacilityTitle => 'حجز مرفق ترفيهي';
+
+  @override
+  String get selectFacilityLabel => 'اختر المرفق';
+
+  @override
+  String get selectDateAndSlot => 'اختر التاريخ والفترة الزمنية';
+
+  @override
+  String get durationHoursLabel => 'المدة';
+
+  @override
+  String hoursCount(int count) {
+    return '$count ساعة';
+  }
+
+  @override
+  String get totalRateLabel => 'إجمالي رسوم الحجز';
+
+  @override
+  String get confirmFacilityBooking => 'تأكيد حجز المرفق';
+
+  @override
+  String get myFacilityBookings => 'حجوزات المرافق الخاصة بي';
+
+  @override
+  String get noFacilityBookingsYet =>
+      'لا توجد حجوزات مرافق بعد. اختر مرفقاً أعلاه للحجز.';
+
+  @override
+  String get bookHousekeepingTitle => 'حجز خدمة النظافة المنزلية';
+
+  @override
+  String get selectCleaningPackage => 'اختر باقة التنظيف';
+
+  @override
+  String get selectDurationAndRate => 'عدد الساعات وحاسبة التكلفة';
+
+  @override
+  String get specialCleaningNotes => 'تعليمات تنظيف خاصة (اختياري)';
+
+  @override
+  String get specialCleaningNotesHint =>
+      'مثال: التركيز على زجاج التراس، إحضار منظفات صديقة للبيئة...';
+
+  @override
+  String get confirmHousekeepingBooking => 'تأكيد حجز خدمة النظافة';
+
+  @override
+  String get myHousekeepingBookings => 'مواعيد النظافة الخاصة بي';
+
+  @override
+  String get noHousekeepingBookingsYet => 'لا توجد مواعيد نظافة محجوزة بعد.';
+
+  @override
+  String get cancelBooking => 'إلغاء الحجز';
+
+  @override
+  String get confirmBookingAction => 'تأكيد';
+
+  @override
+  String get assignCleaningTeamTitle => 'توجيه طاقم النظافة';
+
+  @override
+  String get teamFatimaSunita => 'فريق أ: فاطمة وسونيتا (تنظيف عميق للفلل)';
+
+  @override
+  String get teamMariaElena => 'فريق ب: ماريا وإيلينا (تنظيف قياسي)';
+
+  @override
+  String get teamAminaGrace => 'فريق ج: أمينة وغريس (ضيافة سريعة)';
+
+  @override
+  String get noFacilityBookingsStaff => 'لا توجد حجوزات مرافق مسجلة حالياً.';
+
+  @override
+  String get noHousekeepingBookingsStaff =>
+      'لا توجد مواعيد نظافة مسجلة حالياً.';
+
+  @override
+  String get totalBookingsMetric => 'الإجمالي';
+
+  @override
+  String get confirmedMetric => 'مؤكد';
+
+  @override
+  String get completedMetric => 'مكتمل';
+
+  @override
+  String ratePerHour(int amount) {
+    return '$amount ر.س/ساعة';
+  }
+
+  @override
   String get housekeepingAndCleaning => 'النظافة المنزلية';
 
   @override

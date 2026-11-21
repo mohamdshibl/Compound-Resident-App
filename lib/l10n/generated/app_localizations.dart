@@ -926,6 +926,180 @@ abstract class AppLocalizations {
   /// **'Checked out at {time}'**
   String checkedOutAt(String time);
 
+  /// No description provided for @bookFacilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Recreation Facility'**
+  String get bookFacilityTitle;
+
+  /// No description provided for @selectFacilityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Facility'**
+  String get selectFacilityLabel;
+
+  /// No description provided for @selectDateAndSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date & Time Slot'**
+  String get selectDateAndSlot;
+
+  /// No description provided for @durationHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get durationHoursLabel;
+
+  /// No description provided for @hoursCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} hr(s)'**
+  String hoursCount(int count);
+
+  /// No description provided for @totalRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Reservation Fee'**
+  String get totalRateLabel;
+
+  /// No description provided for @confirmFacilityBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Facility Reservation'**
+  String get confirmFacilityBooking;
+
+  /// No description provided for @myFacilityBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'My Facility Reservations'**
+  String get myFacilityBookings;
+
+  /// No description provided for @noFacilityBookingsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No facility reservations yet. Select a facility above to book.'**
+  String get noFacilityBookingsYet;
+
+  /// No description provided for @bookHousekeepingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Housekeeping Service'**
+  String get bookHousekeepingTitle;
+
+  /// No description provided for @selectCleaningPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Cleaning Package'**
+  String get selectCleaningPackage;
+
+  /// No description provided for @selectDurationAndRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration & Rate Calculator'**
+  String get selectDurationAndRate;
+
+  /// No description provided for @specialCleaningNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Cleaning Instructions (Optional)'**
+  String get specialCleaningNotes;
+
+  /// No description provided for @specialCleaningNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Focus on terrace glass, bring eco-friendly detergent...'**
+  String get specialCleaningNotesHint;
+
+  /// No description provided for @confirmHousekeepingBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Housekeeping Booking'**
+  String get confirmHousekeepingBooking;
+
+  /// No description provided for @myHousekeepingBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'My Cleaning Appointments'**
+  String get myHousekeepingBookings;
+
+  /// No description provided for @noHousekeepingBookingsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No housekeeping appointments booked yet.'**
+  String get noHousekeepingBookingsYet;
+
+  /// No description provided for @cancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelBooking;
+
+  /// No description provided for @confirmBookingAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmBookingAction;
+
+  /// No description provided for @assignCleaningTeamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dispatch Cleaning Staff'**
+  String get assignCleaningTeamTitle;
+
+  /// No description provided for @teamFatimaSunita.
+  ///
+  /// In en, this message translates to:
+  /// **'Team A: Fatima & Sunita (Deep Villa Specialists)'**
+  String get teamFatimaSunita;
+
+  /// No description provided for @teamMariaElena.
+  ///
+  /// In en, this message translates to:
+  /// **'Team B: Maria & Elena (Standard Residence)'**
+  String get teamMariaElena;
+
+  /// No description provided for @teamAminaGrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Team C: Amina & Grace (Express Hospitality)'**
+  String get teamAminaGrace;
+
+  /// No description provided for @noFacilityBookingsStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No facility bookings in Cloud Firestore yet.'**
+  String get noFacilityBookingsStaff;
+
+  /// No description provided for @noHousekeepingBookingsStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'No housekeeping appointments in Cloud Firestore yet.'**
+  String get noHousekeepingBookingsStaff;
+
+  /// No description provided for @totalBookingsMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalBookingsMetric;
+
+  /// No description provided for @confirmedMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get confirmedMetric;
+
+  /// No description provided for @completedMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completedMetric;
+
+  /// No description provided for @ratePerHour.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} SAR/hr'**
+  String ratePerHour(int amount);
+
   /// No description provided for @housekeepingAndCleaning.
   ///
   /// In en, this message translates to:

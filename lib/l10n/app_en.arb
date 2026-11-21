@@ -196,6 +196,46 @@
     }
   },
 
+  "bookFacilityTitle": "Book Recreation Facility",
+  "selectFacilityLabel": "Select Facility",
+  "selectDateAndSlot": "Select Date & Time Slot",
+  "durationHoursLabel": "Duration",
+  "hoursCount": "{count} hr(s)",
+  "@hoursCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "totalRateLabel": "Total Reservation Fee",
+  "confirmFacilityBooking": "Confirm Facility Reservation",
+  "myFacilityBookings": "My Facility Reservations",
+  "noFacilityBookingsYet": "No facility reservations yet. Select a facility above to book.",
+  "bookHousekeepingTitle": "Book Housekeeping Service",
+  "selectCleaningPackage": "Select Cleaning Package",
+  "selectDurationAndRate": "Duration & Rate Calculator",
+  "specialCleaningNotes": "Special Cleaning Instructions (Optional)",
+  "specialCleaningNotesHint": "e.g. Focus on terrace glass, bring eco-friendly detergent...",
+  "confirmHousekeepingBooking": "Confirm Housekeeping Booking",
+  "myHousekeepingBookings": "My Cleaning Appointments",
+  "noHousekeepingBookingsYet": "No housekeeping appointments booked yet.",
+  "cancelBooking": "Cancel",
+  "confirmBookingAction": "Confirm",
+  "assignCleaningTeamTitle": "Dispatch Cleaning Staff",
+  "teamFatimaSunita": "Team A: Fatima & Sunita (Deep Villa Specialists)",
+  "teamMariaElena": "Team B: Maria & Elena (Standard Residence)",
+  "teamAminaGrace": "Team C: Amina & Grace (Express Hospitality)",
+  "noFacilityBookingsStaff": "No facility bookings in Cloud Firestore yet.",
+  "noHousekeepingBookingsStaff": "No housekeeping appointments in Cloud Firestore yet.",
+  "totalBookingsMetric": "Total",
+  "confirmedMetric": "Confirmed",
+  "completedMetric": "Completed",
+  "ratePerHour": "{amount} SAR/hr",
+  "@ratePerHour": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+
   "housekeepingAndCleaning": "Housekeeping & Cleaning",
   "housekeepingSupervisorFallback": "Housekeeping Supervisor",
   "housekeepingRateSubtitle": "Standard Rate: 100 SAR/hr • 6 Cleaning Staff Active",

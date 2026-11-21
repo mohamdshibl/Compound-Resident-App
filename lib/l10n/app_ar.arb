@@ -196,6 +196,46 @@
     }
   },
 
+  "bookFacilityTitle": "حجز مرفق ترفيهي",
+  "selectFacilityLabel": "اختر المرفق",
+  "selectDateAndSlot": "اختر التاريخ والفترة الزمنية",
+  "durationHoursLabel": "المدة",
+  "hoursCount": "{count} ساعة",
+  "@hoursCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "totalRateLabel": "إجمالي رسوم الحجز",
+  "confirmFacilityBooking": "تأكيد حجز المرفق",
+  "myFacilityBookings": "حجوزات المرافق الخاصة بي",
+  "noFacilityBookingsYet": "لا توجد حجوزات مرافق بعد. اختر مرفقاً أعلاه للحجز.",
+  "bookHousekeepingTitle": "حجز خدمة النظافة المنزلية",
+  "selectCleaningPackage": "اختر باقة التنظيف",
+  "selectDurationAndRate": "عدد الساعات وحاسبة التكلفة",
+  "specialCleaningNotes": "تعليمات تنظيف خاصة (اختياري)",
+  "specialCleaningNotesHint": "مثال: التركيز على زجاج التراس، إحضار منظفات صديقة للبيئة...",
+  "confirmHousekeepingBooking": "تأكيد حجز خدمة النظافة",
+  "myHousekeepingBookings": "مواعيد النظافة الخاصة بي",
+  "noHousekeepingBookingsYet": "لا توجد مواعيد نظافة محجوزة بعد.",
+  "cancelBooking": "إلغاء الحجز",
+  "confirmBookingAction": "تأكيد",
+  "assignCleaningTeamTitle": "توجيه طاقم النظافة",
+  "teamFatimaSunita": "فريق أ: فاطمة وسونيتا (تنظيف عميق للفلل)",
+  "teamMariaElena": "فريق ب: ماريا وإيلينا (تنظيف قياسي)",
+  "teamAminaGrace": "فريق ج: أمينة وغريس (ضيافة سريعة)",
+  "noFacilityBookingsStaff": "لا توجد حجوزات مرافق مسجلة حالياً.",
+  "noHousekeepingBookingsStaff": "لا توجد مواعيد نظافة مسجلة حالياً.",
+  "totalBookingsMetric": "الإجمالي",
+  "confirmedMetric": "مؤكد",
+  "completedMetric": "مكتمل",
+  "ratePerHour": "{amount} ر.س/ساعة",
+  "@ratePerHour": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+
   "housekeepingAndCleaning": "النظافة المنزلية",
   "housekeepingSupervisorFallback": "مشرفة النظافة",
   "housekeepingRateSubtitle": "السعر القياسي: ١٠٠ ر.س/ساعة • ٦ عاملات نشطات",

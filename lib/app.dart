@@ -7,6 +7,7 @@ import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/auth_state.dart';
+import 'features/bookings/presentation/cubit/booking_cubit.dart';
 import 'features/requests/presentation/cubit/maintenance_cubit.dart';
 import 'features/visitor_management/presentation/cubit/visitor_cubit.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -23,6 +24,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
   late final AuthCubit _authCubit;
   late final MaintenanceCubit _maintenanceCubit;
   late final VisitorCubit _visitorCubit;
+  late final BookingCubit _bookingCubit;
   late final GoRouter _router;
 
   @override
@@ -32,6 +34,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
     _authCubit = sl<AuthCubit>();
     _maintenanceCubit = sl<MaintenanceCubit>();
     _visitorCubit = sl<VisitorCubit>();
+    _bookingCubit = sl<BookingCubit>();
     _router = AppRouter.createRouter(_authCubit);
   }
 
@@ -41,6 +44,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
     _authCubit.close();
     _maintenanceCubit.close();
     _visitorCubit.close();
+    _bookingCubit.close();
     super.dispose();
   }
 
@@ -53,13 +57,19 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
           residentEmail: user.email,
           residentId: user.id,
         );
+        _bookingCubit.listenToMyBookings(
+          userEmail: user.email,
+          userId: user.id,
+        );
       } else {
         _maintenanceCubit.listenToRequests(compoundId: user.compoundId);
         _visitorCubit.listenToCompoundPasses(compoundId: user.compoundId);
+        _bookingCubit.listenToCompoundBookings(compoundId: user.compoundId);
       }
     } else if (authState is Unauthenticated) {
       _maintenanceCubit.clear();
       _visitorCubit.clear();
+      _bookingCubit.clear();
     }
   }
 
@@ -71,6 +81,7 @@ class _CompoundResidentAppState extends State<CompoundResidentApp> {
         BlocProvider<AuthCubit>.value(value: _authCubit),
         BlocProvider<MaintenanceCubit>.value(value: _maintenanceCubit),
         BlocProvider<VisitorCubit>.value(value: _visitorCubit),
+        BlocProvider<BookingCubit>.value(value: _bookingCubit),
       ],
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, authState) => _syncFirestoreStreams(authState),

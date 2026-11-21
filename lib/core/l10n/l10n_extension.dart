@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import '../../features/auth/domain/entities/user_entity.dart';
+import '../../features/bookings/domain/entities/booking_entity.dart';
 import '../../features/requests/domain/entities/request_enums.dart';
 import '../../features/visitor_management/domain/entities/visitor_pass_entity.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -45,4 +46,17 @@ extension RequestStatusL10nX on RequestStatus {
 extension VisitorPassStatusL10nX on VisitorPassStatus {
   String localizedName(BuildContext context) =>
       context.isArabic ? displayNameAr : displayNameEn;
+}
+
+extension BookingStatusL10nX on BookingStatus {
+  String localizedName(BuildContext context) =>
+      context.isArabic ? displayNameAr : displayNameEn;
+}
+
+extension BookingCatalogItemL10nX on BookingCatalogItem {
+  String localizedTitle(BuildContext context) =>
+      context.isArabic ? titleAr : titleEn;
+
+  String localizedSubtitle(BuildContext context) =>
+      context.isArabic ? subtitleAr : subtitleEn;
 }

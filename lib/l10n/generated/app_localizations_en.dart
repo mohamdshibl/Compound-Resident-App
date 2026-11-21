@@ -453,6 +453,103 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get bookFacilityTitle => 'Book Recreation Facility';
+
+  @override
+  String get selectFacilityLabel => 'Select Facility';
+
+  @override
+  String get selectDateAndSlot => 'Select Date & Time Slot';
+
+  @override
+  String get durationHoursLabel => 'Duration';
+
+  @override
+  String hoursCount(int count) {
+    return '$count hr(s)';
+  }
+
+  @override
+  String get totalRateLabel => 'Total Reservation Fee';
+
+  @override
+  String get confirmFacilityBooking => 'Confirm Facility Reservation';
+
+  @override
+  String get myFacilityBookings => 'My Facility Reservations';
+
+  @override
+  String get noFacilityBookingsYet =>
+      'No facility reservations yet. Select a facility above to book.';
+
+  @override
+  String get bookHousekeepingTitle => 'Book Housekeeping Service';
+
+  @override
+  String get selectCleaningPackage => 'Select Cleaning Package';
+
+  @override
+  String get selectDurationAndRate => 'Duration & Rate Calculator';
+
+  @override
+  String get specialCleaningNotes => 'Special Cleaning Instructions (Optional)';
+
+  @override
+  String get specialCleaningNotesHint =>
+      'e.g. Focus on terrace glass, bring eco-friendly detergent...';
+
+  @override
+  String get confirmHousekeepingBooking => 'Confirm Housekeeping Booking';
+
+  @override
+  String get myHousekeepingBookings => 'My Cleaning Appointments';
+
+  @override
+  String get noHousekeepingBookingsYet =>
+      'No housekeeping appointments booked yet.';
+
+  @override
+  String get cancelBooking => 'Cancel';
+
+  @override
+  String get confirmBookingAction => 'Confirm';
+
+  @override
+  String get assignCleaningTeamTitle => 'Dispatch Cleaning Staff';
+
+  @override
+  String get teamFatimaSunita =>
+      'Team A: Fatima & Sunita (Deep Villa Specialists)';
+
+  @override
+  String get teamMariaElena => 'Team B: Maria & Elena (Standard Residence)';
+
+  @override
+  String get teamAminaGrace => 'Team C: Amina & Grace (Express Hospitality)';
+
+  @override
+  String get noFacilityBookingsStaff =>
+      'No facility bookings in Cloud Firestore yet.';
+
+  @override
+  String get noHousekeepingBookingsStaff =>
+      'No housekeeping appointments in Cloud Firestore yet.';
+
+  @override
+  String get totalBookingsMetric => 'Total';
+
+  @override
+  String get confirmedMetric => 'Confirmed';
+
+  @override
+  String get completedMetric => 'Completed';
+
+  @override
+  String ratePerHour(int amount) {
+    return '$amount SAR/hr';
+  }
+
+  @override
   String get housekeepingAndCleaning => 'Housekeeping & Cleaning';
 
   @override

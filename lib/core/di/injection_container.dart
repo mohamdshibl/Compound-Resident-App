@@ -8,6 +8,11 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/auth_usecases.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/bookings/data/datasources/booking_remote_data_source.dart';
+import '../../features/bookings/data/repositories/booking_repository_impl.dart';
+import '../../features/bookings/domain/repositories/booking_repository.dart';
+import '../../features/bookings/domain/usecases/booking_usecases.dart';
+import '../../features/bookings/presentation/cubit/booking_cubit.dart';
 import '../../features/requests/data/datasources/maintenance_remote_data_source.dart';
 import '../../features/requests/data/repositories/maintenance_repository_impl.dart';
 import '../../features/requests/domain/repositories/maintenance_repository.dart';
@@ -42,6 +47,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<VisitorRemoteDataSource>(
     () => VisitorRemoteDataSourceImpl(firestore: sl()),
   );
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(firestore: sl()),
+  );
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -52,6 +60,9 @@ Future<void> initDependencies() async {
   );
   sl.registerLazySingleton<VisitorRepository>(
     () => VisitorRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(remoteDataSource: sl()),
   );
 
   // Auth Use Cases
@@ -76,6 +87,13 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => CheckInVisitorUseCase(sl()));
   sl.registerLazySingleton(() => CheckOutVisitorUseCase(sl()));
   sl.registerLazySingleton(() => DenyVisitorEntryUseCase(sl()));
+
+  // Booking Use Cases
+  sl.registerLazySingleton(() => GetMyBookingsUseCase(sl()));
+  sl.registerLazySingleton(() => GetCompoundBookingsUseCase(sl()));
+  sl.registerLazySingleton(() => CreateBookingUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateBookingStatusUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitBookingRatingUseCase(sl()));
 
   // Cubits / Blocs
   sl.registerFactory(() => LocaleCubit());
@@ -108,6 +126,16 @@ Future<void> initDependencies() async {
       checkInVisitorUseCase: sl(),
       checkOutVisitorUseCase: sl(),
       denyVisitorEntryUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => BookingCubit(
+      getMyBookingsUseCase: sl(),
+      getCompoundBookingsUseCase: sl(),
+      createBookingUseCase: sl(),
+      updateBookingStatusUseCase: sl(),
+      submitBookingRatingUseCase: sl(),
     ),
   );
 }
